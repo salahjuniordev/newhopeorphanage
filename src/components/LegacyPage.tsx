@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useRouterState } from "@tanstack/react-router";
 import { extractLegacy } from "@/lib/legacy-html";
 
 interface LegacyPageProps {
@@ -12,74 +13,208 @@ declare global {
     jQuery?: any;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     $?: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Swiper?: any;
   }
+}
+
+// Inline placeholder used when an image/video asset fails to load. Preserves
+// layout (fills its container) and shows the broken filename so we know what's
+// missing without breaking the surrounding design.
+const PLACEHOLDER_STYLE = `
+.nho-asset-fallback{
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  width:100%;height:100%;min-height:160px;
+  background:linear-gradient(135deg,#fdecd4 0%,#f7c873 100%);
+  color:#5a3a13;font-family:'Onest',system-ui,sans-serif;font-weight:600;
+  font-size:13px;padding:12px;border-radius:inherit;line-height:1.4;
+  word-break:break-word;
+}
+.nho-asset-fallback small{display:block;opacity:.7;font-weight:500;margin-top:4px}
+/* Active nav link */
+.main-menu .navbar-nav > li.nho-active > .nav-link,
+.slicknav_nav > li.nho-active > a{
+  color:#f7941e !important;
+}
+/* Make sure logo image always has a reserved box so missing logo still
+   keeps header layout */
+.navbar-brand img{max-height:60px;width:auto}
+`;
+
+// Map route pathname → the menu link target it should activate.
+function activeHrefFor(pathname: string): string | null {
+  if (pathname === "/") return "/";
+  // Trim trailing slash
+  const p = pathname.replace(/\/$/, "");
+  return p || "/";
 }
 
 export function LegacyPage({ html, title }: LegacyPageProps) {
   const { styles, body } = extractLegacy(html);
   const ref = useRef<HTMLDivElement>(null);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
     if (title) document.title = title;
   }, [title]);
 
+  // After mount: highlight active nav link, wire fallbacks, init plugins.
   useEffect(() => {
-    // After client mount, re-trigger jQuery $(document).ready handlers so
-    // plugins (Swiper, SlickNav, Magnific popup, WOW, counters, parallax)
-    // bind to the just-rendered DOM. function.js registers everything
-    // inside $(document).ready, so calling .ready(fn) again re-runs nothing —
-    // instead we dispatch DOMContentLoaded and call known plugin inits if
-    // available.
     if (typeof window === "undefined") return;
-    const $ = window.jQuery;
-    if (!$) return;
+    const root = ref.current;
+    if (!root) return;
 
-    // Re-trigger ready queue is not safe; instead fire a custom init pulse
-    // that function.js does not gate on. Most plugins are simple jQuery
-    // calls on selectors — trigger common ones manually:
+    // ---- Active nav link state ----
+    const active = activeHrefFor(pathname);
+    if (active) {
+      root.querySelectorAll<HTMLAnchorElement>(".main-menu a.nav-link").forEach((a) => {
+        const href = a.getAttribute("href");
+        const li = a.closest("li");
+        if (!li) return;
+        li.classList.toggle("nho-active", href === active);
+      });
+    }
+
+    // ---- Asset fallback: broken images & videos ----
+    const onError = (e: Event) => {
+      const t = e.target as HTMLElement;
+      if (!t) return;
+      if (t.tagName === "IMG") {
+        const img = t as HTMLImageElement;
+        if (img.dataset.fallbackApplied) return;
+        img.dataset.fallbackApplied = "1";
+        const label = img.getAttribute("alt") || img.getAttribute("src")?.split("/").pop() || "Image";
+        const w = img.width || img.clientWidth;
+        const h = img.height || img.clientHeight;
+        const div = document.createElement("div");
+        div.className = "nho-asset-fallback";
+        if (w) div.style.minWidth = `${w}px`;
+        if (h) div.style.minHeight = `${h}px`;
+        div.innerHTML = `<div>${label}<small>image unavailable</small></div>`;
+        img.replaceWith(div);
+      } else if (t.tagName === "VIDEO" || t.tagName === "SOURCE") {
+        const vid = (t.tagName === "SOURCE" ? t.parentElement : t) as HTMLVideoElement | null;
+        if (!vid || vid.dataset.fallbackApplied) return;
+        vid.dataset.fallbackApplied = "1";
+        const div = document.createElement("div");
+        div.className = "nho-asset-fallback";
+        div.style.minHeight = "240px";
+        div.innerHTML = `<div>Video<small>unavailable</small></div>`;
+        vid.replaceWith(div);
+      }
+    };
+    root.addEventListener("error", onError, true);
+
+    // ---- jQuery plugins ----
+    const $ = window.jQuery;
+    if (!$) return () => root.removeEventListener("error", onError, true);
+
     try {
-      // SlickNav mobile menu
-      if ($.fn.slicknav) {
-        $("#responsive-menu").slicknav({
+      // SlickNav mobile menu — clones #menu into .responsive-menu
+      if ($.fn.slicknav && $("#menu", root).length && !$(".slicknav_menu", root).length) {
+        $("#menu", root).slicknav({
           label: "",
-          prependTo: ".mobile-menu",
+          prependTo: $(".responsive-menu", root)[0] ? ".responsive-menu" : "body",
           allowParentLinks: true,
         });
       }
-      // Magnific popup for video
+
+      // Magnific popup for videos (handles youtube + mp4 via iframe)
       if ($.fn.magnificPopup) {
-        $(".popup-video, .popup-youtube, .popup-vimeo").magnificPopup({
+        $(".popup-video, .popup-youtube, .popup-vimeo", root).magnificPopup({
+          disableOn: 0,
           type: "iframe",
           mainClass: "mfp-fade",
           removalDelay: 160,
           preloader: false,
           fixedContentPos: false,
+          callbacks: {
+            // Pause/cleanup any media element when the popup closes
+            close: function () {
+              document.querySelectorAll("video").forEach((v) => {
+                try {
+                  v.pause();
+                } catch {
+                  /* noop */
+                }
+              });
+            },
+          },
+          iframe: {
+            patterns: {
+              // Allow plain .mp4 / .webm to load in the iframe
+              mp4: {
+                index: ".mp4",
+                src: "%id%",
+              },
+              webm: {
+                index: ".webm",
+                src: "%id%",
+              },
+            },
+          },
         });
-        $(".popup-gallery").magnificPopup({
+        $(".popup-gallery, .gallery-items", root).magnificPopup({
+          delegate: "a",
           type: "image",
           gallery: { enabled: true },
         });
       }
-      // Counter up
-      if ($.fn.counterUp) {
-        $(".counter").counterUp({ delay: 10, time: 1000 });
+
+      // Swiper sliders
+      const SwiperCtor = window.Swiper;
+      if (SwiperCtor) {
+        root.querySelectorAll(".hero-slider-layout .swiper").forEach((el) => {
+          new SwiperCtor(el as HTMLElement, {
+            slidesPerView: 1,
+            speed: 1000,
+            loop: true,
+            autoplay: { delay: 4000 },
+            pagination: { el: ".hero-pagination", clickable: true },
+          });
+        });
+        root.querySelectorAll(".testimonial-slider .swiper").forEach((el) => {
+          new SwiperCtor(el as HTMLElement, {
+            slidesPerView: 1,
+            speed: 1000,
+            spaceBetween: 30,
+            loop: true,
+            autoplay: { delay: 5000 },
+            pagination: { el: ".testimonial-pagination", clickable: true },
+            navigation: {
+              nextEl: ".testimonial-button-next",
+              prevEl: ".testimonial-button-prev",
+            },
+          });
+        });
+        root.querySelectorAll(".donar-company-slider .swiper").forEach((el) => {
+          new SwiperCtor(el as HTMLElement, {
+            slidesPerView: 2,
+            speed: 2000,
+            spaceBetween: 50,
+            loop: true,
+            autoplay: { delay: 5000 },
+            breakpoints: { 768: { slidesPerView: 3 }, 991: { slidesPerView: 3 } },
+          });
+        });
       }
-      // WOW animations
-      if (typeof (window as unknown as { WOW?: new () => { init(): void } }).WOW !== "undefined") {
-        new (window as unknown as { WOW: new () => { init(): void } }).WOW().init();
-      }
-      // Parallax
-      if ($.fn.parallaxie) {
-        $(".parallaxie").parallaxie({ speed: 0.5, offset: 0 });
-      }
-    } catch {
-      // ignore — visual content still renders
+
+      if ($.fn.counterUp) $(".counter", root).counterUp({ delay: 10, time: 1000 });
+      if ($.fn.parallaxie) $(".parallaxie", root).parallaxie({ speed: 0.5, offset: 0 });
+      const WOW = (window as unknown as { WOW?: new () => { init(): void } }).WOW;
+      if (WOW) new WOW().init();
+    } catch (err) {
+      console.warn("[LegacyPage] plugin init failed", err);
     }
-  }, [body]);
+
+    return () => {
+      root.removeEventListener("error", onError, true);
+    };
+  }, [body, pathname]);
 
   return (
     <>
-      {styles ? <style dangerouslySetInnerHTML={{ __html: styles }} /> : null}
+      <style dangerouslySetInnerHTML={{ __html: PLACEHOLDER_STYLE + (styles || "") }} />
       <div ref={ref} dangerouslySetInnerHTML={{ __html: body }} />
     </>
   );
