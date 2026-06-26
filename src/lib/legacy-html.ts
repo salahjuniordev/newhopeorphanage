@@ -28,6 +28,8 @@ function rewritePaths(html: string): string {
     "/legacy/videos/1.mp4": "/__l5e/assets-v1/5a97c068-6b27-468d-88d7-a6ab579ce23b/1.mp4",
     "/legacy/videos/2.mp4": "/__l5e/assets-v1/ed0fb819-7c56-4172-ae1e-9a6fc6634fde/2.mp4",
     "/legacy/videos/4.mp4": "/__l5e/assets-v1/6377d940-d0d4-47c8-946e-2273699b2eac/4.mp4",
+    // Original repo referenced Facebook.mp4 that was never published — fall back to 3.mp4
+    "/legacy/videos/Facebook.mp4": "/legacy/videos/3.mp4",
   };
   for (const [from, to] of Object.entries(EXTERNAL_VIDEOS)) {
     out = out.split(from).join(to);
