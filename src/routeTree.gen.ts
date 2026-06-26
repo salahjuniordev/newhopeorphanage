@@ -9,8 +9,56 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VideoGalleryRouteImport } from './routes/video-gallery'
+import { Route as TeamSingleRouteImport } from './routes/team-single'
+import { Route as TeamRouteImport } from './routes/team'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as FaqsRouteImport } from './routes/faqs'
+import { Route as DonationRouteImport } from './routes/donation'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as IndexRouteImport } from './routes/index'
 
+const VideoGalleryRoute = VideoGalleryRouteImport.update({
+  id: '/video-gallery',
+  path: '/video-gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeamSingleRoute = TeamSingleRouteImport.update({
+  id: '/team-single',
+  path: '/team-single',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeamRoute = TeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqsRoute = FaqsRouteImport.update({
+  id: '/faqs',
+  path: '/faqs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DonationRoute = DonationRouteImport.update({
+  id: '/donation',
+  path: '/donation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +67,144 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
+  '/donation': typeof DonationRoute
+  '/faqs': typeof FaqsRoute
+  '/login': typeof LoginRoute
+  '/team': typeof TeamRoute
+  '/team-single': typeof TeamSingleRoute
+  '/video-gallery': typeof VideoGalleryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
+  '/donation': typeof DonationRoute
+  '/faqs': typeof FaqsRoute
+  '/login': typeof LoginRoute
+  '/team': typeof TeamRoute
+  '/team-single': typeof TeamSingleRoute
+  '/video-gallery': typeof VideoGalleryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
+  '/donation': typeof DonationRoute
+  '/faqs': typeof FaqsRoute
+  '/login': typeof LoginRoute
+  '/team': typeof TeamRoute
+  '/team-single': typeof TeamSingleRoute
+  '/video-gallery': typeof VideoGalleryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/contact'
+    | '/dashboard'
+    | '/donation'
+    | '/faqs'
+    | '/login'
+    | '/team'
+    | '/team-single'
+    | '/video-gallery'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/contact'
+    | '/dashboard'
+    | '/donation'
+    | '/faqs'
+    | '/login'
+    | '/team'
+    | '/team-single'
+    | '/video-gallery'
+  id:
+    | '__root__'
+    | '/'
+    | '/contact'
+    | '/dashboard'
+    | '/donation'
+    | '/faqs'
+    | '/login'
+    | '/team'
+    | '/team-single'
+    | '/video-gallery'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ContactRoute: typeof ContactRoute
+  DashboardRoute: typeof DashboardRoute
+  DonationRoute: typeof DonationRoute
+  FaqsRoute: typeof FaqsRoute
+  LoginRoute: typeof LoginRoute
+  TeamRoute: typeof TeamRoute
+  TeamSingleRoute: typeof TeamSingleRoute
+  VideoGalleryRoute: typeof VideoGalleryRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/video-gallery': {
+      id: '/video-gallery'
+      path: '/video-gallery'
+      fullPath: '/video-gallery'
+      preLoaderRoute: typeof VideoGalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/team-single': {
+      id: '/team-single'
+      path: '/team-single'
+      fullPath: '/team-single'
+      preLoaderRoute: typeof TeamSingleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/team': {
+      id: '/team'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof TeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faqs': {
+      id: '/faqs'
+      path: '/faqs'
+      fullPath: '/faqs'
+      preLoaderRoute: typeof FaqsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/donation': {
+      id: '/donation'
+      path: '/donation'
+      fullPath: '/donation'
+      preLoaderRoute: typeof DonationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,17 +217,15 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ContactRoute: ContactRoute,
+  DashboardRoute: DashboardRoute,
+  DonationRoute: DonationRoute,
+  FaqsRoute: FaqsRoute,
+  LoginRoute: LoginRoute,
+  TeamRoute: TeamRoute,
+  TeamSingleRoute: TeamSingleRoute,
+  VideoGalleryRoute: VideoGalleryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
