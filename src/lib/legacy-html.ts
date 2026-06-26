@@ -23,10 +23,20 @@ function rewritePaths(html: string): string {
   }
   // Asset folders → /legacy/...
   out = out.replace(/(["'(])(?:\.\/)?(images|videos|css|js)\//g, "$1/legacy/$2/");
+  // Externalized large videos (over 10 MB) stored as .asset.json
+  const EXTERNAL_VIDEOS: Record<string, string> = {
+    "/legacy/videos/1.mp4": "/__l5e/assets-v1/5a97c068-6b27-468d-88d7-a6ab579ce23b/1.mp4",
+    "/legacy/videos/2.mp4": "/__l5e/assets-v1/ed0fb819-7c56-4172-ae1e-9a6fc6634fde/2.mp4",
+    "/legacy/videos/4.mp4": "/__l5e/assets-v1/6377d940-d0d4-47c8-946e-2273699b2eac/4.mp4",
+  };
+  for (const [from, to] of Object.entries(EXTERNAL_VIDEOS)) {
+    out = out.split(from).join(to);
+  }
   // Strip Cloudflare email-decode script artifacts (none of our scripts)
   out = out.replace(/<script[^>]*cloudflare[^<]*<\/script>/gi, "");
   return out;
 }
+
 
 export interface LegacyContent {
   styles: string; // concatenated inline <style> blocks from <head>
