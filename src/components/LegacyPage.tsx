@@ -40,6 +40,9 @@ const PLACEHOLDER_STYLE = `
 /* Make sure logo image always has a reserved box so missing logo still
    keeps header layout */
 .navbar-brand img{max-height:60px;width:auto}
+.nho-form-toast{padding:12px 14px;border-radius:10px;margin-bottom:14px;font-size:14px;font-weight:500}
+.nho-form-toast--ok{background:#e8f8f0;color:#1e7a4d;border:1px solid #b2e4cc}
+.nho-form-toast--err{background:#fdf0f0;color:#b03333;border:1px solid #f5c6c6}
 `;
 
 // Map route pathname → the menu link target it should activate.
