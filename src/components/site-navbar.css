@@ -1,0 +1,122 @@
+/* === New Hope premium navbar === */
+.nho-nav{
+  position:sticky;top:0;z-index:1100;width:100%;
+  background:rgba(255,255,255,.78);
+  backdrop-filter:saturate(180%) blur(14px);
+  -webkit-backdrop-filter:saturate(180%) blur(14px);
+  border-bottom:1px solid rgba(15,23,42,.06);
+  transition:background .25s ease, box-shadow .25s ease, border-color .25s ease;
+  font-family:'Onest','Inter',system-ui,sans-serif;
+}
+.nho-nav.is-scrolled{
+  background:rgba(255,255,255,.95);
+  box-shadow:0 10px 30px -18px rgba(15,23,42,.18);
+}
+.nho-nav-inner{
+  max-width:1320px;margin:0 auto;padding:14px 24px;
+  display:flex;align-items:center;gap:24px;
+}
+.nho-brand{display:inline-flex;align-items:center;flex-shrink:0}
+.nho-brand img{height:48px;width:auto;display:block}
+
+.nho-links{display:flex;align-items:center;gap:6px;flex:1;justify-content:center}
+.nho-link{
+  position:relative;display:inline-flex;align-items:center;gap:6px;
+  padding:10px 14px;border-radius:10px;color:#0f172a;text-decoration:none;
+  font-weight:500;font-size:15px;line-height:1;background:transparent;border:0;cursor:pointer;
+  transition:color .2s ease,background .2s ease;
+}
+.nho-link:hover{color:#f7941e;background:rgba(247,148,30,.08)}
+.nho-link.is-active{color:#f7941e}
+.nho-link.is-active::after{
+  content:"";position:absolute;left:14px;right:14px;bottom:4px;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,#f7941e,#ffb95a);
+}
+.nho-has-caret svg{opacity:.7;transition:transform .2s ease}
+.nho-dropdown{position:relative}
+.nho-dropdown:hover .nho-has-caret svg,
+.nho-dropdown:focus-within .nho-has-caret svg{transform:rotate(180deg)}
+.nho-menu{
+  position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%) translateY(6px);
+  min-width:230px;list-style:none;margin:0;padding:8px;
+  background:#fff;border:1px solid rgba(15,23,42,.06);border-radius:14px;
+  box-shadow:0 24px 60px -20px rgba(15,23,42,.25);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .18s ease,transform .18s ease,visibility .18s ease;
+}
+.nho-dropdown:hover .nho-menu,
+.nho-dropdown:focus-within .nho-menu{
+  opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0);
+}
+.nho-menu li a{
+  display:block;padding:10px 14px;border-radius:8px;color:#0f172a;text-decoration:none;
+  font-size:14px;font-weight:500;
+}
+.nho-menu li a:hover{background:rgba(247,148,30,.1);color:#f7941e}
+
+.nho-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
+
+.nho-lang{
+  display:inline-flex;align-items:center;gap:2px;padding:4px;
+  background:rgba(15,23,42,.04);border:1px solid rgba(15,23,42,.08);border-radius:999px;
+}
+.nho-lang button{
+  appearance:none;border:0;background:transparent;cursor:pointer;
+  font-family:inherit;font-size:12px;font-weight:600;letter-spacing:.5px;
+  color:#475569;padding:6px 12px;border-radius:999px;transition:all .2s ease;
+}
+.nho-lang button.is-on{
+  background:linear-gradient(135deg,#f7941e,#ffb95a);color:#fff;
+  box-shadow:0 6px 14px -6px rgba(247,148,30,.6);
+}
+.nho-lang-sep{width:1px;height:16px;background:rgba(15,23,42,.1)}
+
+.nho-btn-ghost{
+  padding:9px 16px;border-radius:999px;font-weight:600;font-size:14px;
+  color:#0f172a;text-decoration:none;border:1px solid rgba(15,23,42,.12);
+  transition:all .2s ease;
+}
+.nho-btn-ghost:hover{border-color:#f7941e;color:#f7941e}
+.nho-btn-cta{
+  padding:10px 20px;border-radius:999px;font-weight:600;font-size:14px;
+  color:#fff;text-decoration:none;
+  background:linear-gradient(135deg,#f7941e,#ff7a00);
+  box-shadow:0 10px 24px -10px rgba(247,148,30,.65);
+  transition:transform .2s ease,box-shadow .2s ease;
+}
+.nho-btn-cta:hover{transform:translateY(-1px);box-shadow:0 14px 30px -10px rgba(247,148,30,.8)}
+
+.nho-burger{display:none;width:40px;height:40px;border-radius:10px;border:1px solid rgba(15,23,42,.1);background:#fff;cursor:pointer;align-items:center;justify-content:center;flex-direction:column;gap:4px}
+.nho-burger span{display:block;width:18px;height:2px;background:#0f172a;border-radius:2px;transition:transform .2s ease,opacity .2s ease}
+.nho-burger.is-open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.nho-burger.is-open span:nth-child(2){opacity:0}
+.nho-burger.is-open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+
+@media (max-width: 1100px){
+  .nho-links{
+    position:fixed;inset:72px 0 auto 0;background:#fff;flex-direction:column;align-items:stretch;
+    padding:16px;gap:4px;border-bottom:1px solid rgba(15,23,42,.06);
+    box-shadow:0 20px 40px -20px rgba(15,23,42,.18);
+    transform:translateY(-20px);opacity:0;visibility:hidden;pointer-events:none;
+    transition:opacity .2s ease,transform .2s ease,visibility .2s ease;
+    max-height:calc(100vh - 72px);overflow-y:auto;
+  }
+  .nho-links.is-open{transform:translateY(0);opacity:1;visibility:visible;pointer-events:auto}
+  .nho-link{width:100%;justify-content:space-between}
+  .nho-dropdown{width:100%}
+  .nho-menu{position:static;transform:none;opacity:1;visibility:visible;pointer-events:auto;box-shadow:none;border:0;background:rgba(15,23,42,.03);margin:4px 0;width:100%;min-width:0}
+  .nho-dropdown:not(:hover):not(:focus-within) .nho-menu{display:none}
+  .nho-burger{display:inline-flex}
+  .nho-btn-ghost{display:none}
+}
+@media (max-width: 560px){
+  .nho-nav-inner{padding:10px 16px;gap:12px}
+  .nho-brand img{height:40px}
+  .nho-btn-cta{padding:8px 14px;font-size:13px}
+}
+
+/* Hide legacy header that ships inside each legacy HTML page */
+.legacy-root header.main-header,
+.legacy-root .responsive-menu{display:none !important}
+/* Push hero content below sticky navbar */
+body{--nho-nav-h:76px}

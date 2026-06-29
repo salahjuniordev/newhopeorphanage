@@ -59,6 +59,10 @@ export function extractLegacy(raw: string): LegacyContent {
   // Strip <script> tags in body — vendor scripts are loaded once in __root.
   let body = bodyContent.replace(/<script[\s\S]*?<\/script>/gi, "");
 
+  // Remove the legacy <header class="main-header">…</header> block — the React
+  // <SiteNavbar /> in __root.tsx provides the unified site navigation now.
+  body = body.replace(/<header\b[^>]*main-header[\s\S]*?<\/header>/gi, "");
+
   body = rewritePaths(body);
 
   return { styles, body };

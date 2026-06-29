@@ -9,7 +9,10 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import navCss from "../components/site-navbar.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { SiteNavbar } from "../components/SiteNavbar";
+import { I18nProvider } from "../lib/i18n";
 
 const LEGACY_CSS = [
   "/legacy/css/bootstrap.min.css",
@@ -127,6 +130,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       ...LEGACY_CSS.map((href) => ({ rel: "stylesheet", href })),
       { rel: "stylesheet", href: appCss },
+      { rel: "stylesheet", href: navCss },
     ],
     scripts: LEGACY_JS.map((src) => ({ src, defer: true })),
   }),
@@ -155,7 +159,10 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <I18nProvider>
+        <SiteNavbar />
+        <Outlet />
+      </I18nProvider>
     </QueryClientProvider>
   );
 }
