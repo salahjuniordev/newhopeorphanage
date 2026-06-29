@@ -45,9 +45,13 @@
   transition:opacity .18s ease,transform .18s ease,visibility .18s ease;
 }
 .nho-dropdown:hover .nho-menu,
-.nho-dropdown:focus-within .nho-menu{
+.nho-dropdown:focus-within .nho-menu,
+.nho-menu.is-open{
   opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0);
 }
+/* Scroll target offset so smooth-scroll lands below the sticky navbar */
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+[id]{scroll-margin-top:84px}
 .nho-menu li a{
   display:block;padding:10px 14px;border-radius:8px;color:#0f172a;text-decoration:none;
   font-size:14px;font-weight:500;
