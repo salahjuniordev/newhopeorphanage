@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { extractLegacy } from "@/lib/legacy-html";
+import { supabase } from "@/integrations/supabase/client";
 
 interface LegacyPageProps {
   html: string;
@@ -39,6 +40,9 @@ const PLACEHOLDER_STYLE = `
 /* Make sure logo image always has a reserved box so missing logo still
    keeps header layout */
 .navbar-brand img{max-height:60px;width:auto}
+.nho-form-toast{padding:12px 14px;border-radius:10px;margin-bottom:14px;font-size:14px;font-weight:500}
+.nho-form-toast--ok{background:#e8f8f0;color:#1e7a4d;border:1px solid #b2e4cc}
+.nho-form-toast--err{background:#fdf0f0;color:#b03333;border:1px solid #f5c6c6}
 `;
 
 // Map route pathname → the menu link target it should activate.
@@ -207,15 +211,79 @@ export function LegacyPage({ html, title }: LegacyPageProps) {
       console.warn("[LegacyPage] plugin init failed", err);
     }
 
+    // ---- Wire contact + donation forms to Lovable Cloud ----
+    const onSubmit = async (ev: Event) => {
+      const form = ev.target as HTMLFormElement;
+      if (!form || form.tagName !== "FORM") return;
+      const isContact = !!form.closest(".contact-form-area, .contact-form, #contact-form");
+      const isDonation = !!form.closest(".donation-form-area, .donation-form, #donation-form");
+      if (!isContact && !isDonation) return;
+      ev.preventDefault();
+      const fd = new FormData(form);
+      const get = (...keys: string[]) => {
+        for (const k of keys) {
+          const v = fd.get(k);
+          if (v != null && String(v).trim()) return String(v).trim();
+        }
+        return "";
+      };
+      const btn = form.querySelector<HTMLButtonElement>('button[type="submit"], input[type="submit"]');
+      const origLabel = btn?.innerText;
+      if (btn) { btn.disabled = true; if ("innerText" in btn) btn.innerText = "Sending…"; }
+      try {
+        if (isContact) {
+          const { error } = await supabase.from("contact_messages").insert({
+            name: get("name", "fname", "full_name", "your-name"),
+            email: get("email", "your-email"),
+            phone: get("phone", "tel"),
+            subject: get("subject", "your-subject"),
+            message: get("message", "msg", "your-message") || " ",
+          });
+          if (error) throw error;
+        } else {
+          const amountRaw = get("amount", "donation-amount", "donate-amount") || "0";
+          const amount = Number(amountRaw.replace(/[^\d.]/g, "")) || 0;
+          if (!amount) throw new Error("Please enter a donation amount.");
+          const { data: { user } } = await supabase.auth.getUser();
+          const { error } = await supabase.from("donations").insert({
+            user_id: user?.id ?? null,
+            donor_name: get("name", "fname", "full_name") || user?.email || "Anonymous",
+            donor_email: get("email") || user?.email || "anonymous@example.com",
+            amount,
+            currency: get("currency") || "USD",
+            cause: get("cause", "category"),
+            message: get("message"),
+          });
+          if (error) throw error;
+        }
+        form.reset();
+        const ok = document.createElement("div");
+        ok.className = "nho-form-toast nho-form-toast--ok";
+        ok.textContent = isContact ? "Message sent — thank you!" : "Thank you for your donation!";
+        form.prepend(ok);
+        setTimeout(() => ok.remove(), 5000);
+      } catch (err) {
+        const msg = document.createElement("div");
+        msg.className = "nho-form-toast nho-form-toast--err";
+        msg.textContent = err instanceof Error ? err.message : "Submission failed.";
+        form.prepend(msg);
+        setTimeout(() => msg.remove(), 5000);
+      } finally {
+        if (btn) { btn.disabled = false; if (origLabel) btn.innerText = origLabel; }
+      }
+    };
+    root.addEventListener("submit", onSubmit);
+
     return () => {
       root.removeEventListener("error", onError, true);
+      root.removeEventListener("submit", onSubmit);
     };
   }, [body, pathname]);
 
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: PLACEHOLDER_STYLE + (styles || "") }} />
-      <div ref={ref} dangerouslySetInnerHTML={{ __html: body }} />
+      <div ref={ref} suppressHydrationWarning dangerouslySetInnerHTML={{ __html: body }} />
     </>
   );
 }
