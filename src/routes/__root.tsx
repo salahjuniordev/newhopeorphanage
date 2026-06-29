@@ -9,7 +9,10 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import navCss from "../components/site-navbar.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { SiteNavbar } from "../components/SiteNavbar";
+import { I18nProvider } from "../lib/i18n";
 
 const LEGACY_CSS = [
   "/legacy/css/bootstrap.min.css",
