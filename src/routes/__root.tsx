@@ -130,6 +130,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       ...LEGACY_CSS.map((href) => ({ rel: "stylesheet", href })),
       { rel: "stylesheet", href: appCss },
+      { rel: "stylesheet", href: navCss },
     ],
     scripts: LEGACY_JS.map((src) => ({ src, defer: true })),
   }),
@@ -158,7 +159,10 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <I18nProvider>
+        <SiteNavbar />
+        <Outlet />
+      </I18nProvider>
     </QueryClientProvider>
   );
 }
