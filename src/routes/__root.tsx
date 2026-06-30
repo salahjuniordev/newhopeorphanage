@@ -12,6 +12,7 @@ import appCss from "../styles.css?url";
 import navCss from "../components/site-navbar.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteNavbar } from "../components/SiteNavbar";
+import { BottomNav } from "../components/BottomNav";
 import { I18nProvider } from "../lib/i18n";
 
 const LEGACY_CSS = [
@@ -162,6 +163,7 @@ function RootComponent() {
       <I18nProvider>
         <SiteNavbar />
         <Outlet />
+        <BottomNav />
       </I18nProvider>
     </QueryClientProvider>
   );
