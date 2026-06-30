@@ -163,6 +163,7 @@ function RootComponent() {
       <I18nProvider>
         <SiteNavbar />
         <Outlet />
+        <BottomNav />
       </I18nProvider>
     </QueryClientProvider>
   );
