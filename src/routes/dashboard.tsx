@@ -100,6 +100,11 @@ function Dashboard() {
             <h1>Hi, {firstName} 👋</h1>
             <p>{session.user.email}</p>
           </div>
+          {isAdmin && (
+            <Link to="/admin" className="nho-dash-signout" style={{ marginRight: 8, background: "linear-gradient(135deg,#f19100,#ffc84a)", color: "#fff", borderColor: "transparent" }}>
+              <Sparkles size={16}/> Admin console
+            </Link>
+          )}
           <button onClick={signOut} className="nho-dash-signout" aria-label="Sign out">
             <LogOut size={16}/> Sign out
           </button>
