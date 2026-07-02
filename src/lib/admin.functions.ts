@@ -76,7 +76,7 @@ export const inviteAdmin = createServerFn({ method: "POST" })
   .inputValidator((input: { email: string; role: "admin" | "moderator" }) => {
     const email = String(input.email ?? "").trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Invalid email");
-    const role = input.role === "moderator" ? "moderator" : "admin";
+    const role: "admin" | "moderator" = input.role === "moderator" ? "moderator" : "admin";
     return { email, role };
   })
   .handler(async ({ data, context }) => {
