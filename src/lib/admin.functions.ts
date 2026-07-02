@@ -133,7 +133,7 @@ export const grantRole = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: { userId: string; role: "admin" | "moderator" | "user" }) => ({
     userId: String(input.userId),
-    role: input.role,
+    role: input.role as "admin" | "moderator" | "user",
   }))
   .handler(async ({ data, context }) => {
     const { data: isAdmin } = await context.supabase.rpc("has_role", {
