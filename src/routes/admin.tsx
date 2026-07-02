@@ -440,8 +440,8 @@ function MessagesTab({ rows, onDelete }: { rows: MessageRow[]; onDelete: (id: st
             <thead><tr><th>Date</th><th>From</th><th>Subject</th><th>Preview</th><th></th></tr></thead>
             <tbody>
               {rows.map((r) => (
-                <>
-                  <tr key={r.id}>
+                <Fragment key={r.id}>
+                  <tr>
                     <td>{new Date(r.created_at).toLocaleDateString()}</td>
                     <td>
                       <div className="adm-list-primary">{r.name}</div>
@@ -459,7 +459,7 @@ function MessagesTab({ rows, onDelete }: { rows: MessageRow[]; onDelete: (id: st
                     </td>
                   </tr>
                   {open === r.id && (
-                    <tr key={r.id + "-x"} className="adm-expand">
+                    <tr className="adm-expand">
                       <td colSpan={5}>
                         <div className="adm-msg-full">
                           <strong>{r.subject || "(no subject)"}</strong>
@@ -472,7 +472,7 @@ function MessagesTab({ rows, onDelete }: { rows: MessageRow[]; onDelete: (id: st
                       </td>
                     </tr>
                   )}
-                </>
+                </Fragment>
               ))}
               {rows.length === 0 && <tr><td colSpan={5} className="adm-empty">No messages yet.</td></tr>}
             </tbody>
