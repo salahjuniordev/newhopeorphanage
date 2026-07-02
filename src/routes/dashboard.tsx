@@ -22,15 +22,18 @@ function Dashboard() {
   const [editPhone, setEditPhone] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
       setSession(s);
       if (!s) navigate({ to: "/login", replace: true });
     });
-    supabase.auth.getSession().then(({ data }) => {
+    supabase.auth.getSession().then(async ({ data }) => {
       setSession(data.session);
-      if (!data.session) navigate({ to: "/login", replace: true });
+      if (!data.session) { navigate({ to: "/login", replace: true }); return; }
+      const { data: r } = await supabase.rpc("has_role", { _user_id: data.session.user.id, _role: "admin" });
+      setIsAdmin(r === true);
     });
     return () => sub.subscription.unsubscribe();
   }, [navigate]);
@@ -100,6 +103,11 @@ function Dashboard() {
             <h1>Hi, {firstName} 👋</h1>
             <p>{session.user.email}</p>
           </div>
+          {isAdmin && (
+            <Link to="/admin" className="nho-dash-signout" style={{ marginRight: 8, background: "linear-gradient(135deg,#f19100,#ffc84a)", color: "#fff", borderColor: "transparent" }}>
+              <Sparkles size={16}/> Admin console
+            </Link>
+          )}
           <button onClick={signOut} className="nho-dash-signout" aria-label="Sign out">
             <LogOut size={16}/> Sign out
           </button>
