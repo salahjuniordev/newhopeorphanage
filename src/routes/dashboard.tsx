@@ -29,9 +29,11 @@ function Dashboard() {
       setSession(s);
       if (!s) navigate({ to: "/login", replace: true });
     });
-    supabase.auth.getSession().then(({ data }) => {
+    supabase.auth.getSession().then(async ({ data }) => {
       setSession(data.session);
-      if (!data.session) navigate({ to: "/login", replace: true });
+      if (!data.session) { navigate({ to: "/login", replace: true }); return; }
+      const { data: r } = await supabase.rpc("has_role", { _user_id: data.session.user.id, _role: "admin" });
+      setIsAdmin(r === true);
     });
     return () => sub.subscription.unsubscribe();
   }, [navigate]);
