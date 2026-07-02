@@ -73,7 +73,7 @@ export const listAllUsers = createServerFn({ method: "GET" })
  */
 export const inviteAdmin = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { email: string; role: "admin" | "moderator" }) => {
+  .inputValidator((input: { email: string; role: "admin" | "moderator" }): { email: string; role: "admin" | "moderator" } => {
     const email = String(input.email ?? "").trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Invalid email");
     const role: "admin" | "moderator" = input.role === "moderator" ? "moderator" : "admin";
