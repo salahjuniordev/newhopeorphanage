@@ -275,7 +275,7 @@ function AdminApp() {
           </button>
         </header>
 
-        {tab === "overview" && <OverviewTab stats={stats} recent={donations.slice(0, 6)} />}
+        {tab === "overview" && <OverviewTab stats={stats} recent={donations.slice(0, 6)} range={range} setRange={setRange} setPreset={setPreset} />}
         {tab === "donations" && <DonationsTab rows={donations} />}
         {tab === "messages" && (
           <MessagesTab rows={messages} onDelete={async (id) => {
@@ -305,6 +305,10 @@ function AdminApp() {
               await doInvite({ data: { email, role } });
               await loadAll();
             }}
+            onResend={async (email, role) => {
+              await doInvite({ data: { email, role: role as "admin" | "moderator" } });
+              await loadAll();
+            }}
             onRevoke={async (id) => {
               await doRevokeInv({ data: { id } });
               setInvitations((prev) => prev.filter((r) => r.id !== id));
@@ -319,7 +323,7 @@ function AdminApp() {
 
 /* -------------------- Tabs -------------------- */
 
-function OverviewTab({ stats, recent }: {
+function OverviewTab({ stats, recent, range, setRange, setPreset }: {
   stats: {
     total: number; donationCount: number; messageCount: number; userCount: number;
     days: { date: string; amount: number }[];
@@ -328,6 +332,9 @@ function OverviewTab({ stats, recent }: {
     pendingInvites: number;
   };
   recent: DonationRow[];
+  range: { from: string; to: string };
+  setRange: (r: { from: string; to: string }) => void;
+  setPreset: (days: number) => void;
 }) {
   return (
     <div className="adm-content">
