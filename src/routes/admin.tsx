@@ -117,39 +117,61 @@ function AdminApp() {
 
   useEffect(() => { if (isAdmin) loadAll(); /* eslint-disable-next-line */ }, [isAdmin]);
 
-  // --- Derived stats ---
+  // --- Date range filter (default: last 30 days) ---
+  const [range, setRange] = useState<{ from: string; to: string }>(() => {
+    const to = new Date();
+    const from = new Date(); from.setDate(from.getDate() - 30);
+    return { from: from.toISOString().slice(0, 10), to: to.toISOString().slice(0, 10) };
+  });
+  const setPreset = (days: number) => {
+    const to = new Date();
+    const from = new Date(); from.setDate(from.getDate() - days);
+    setRange({ from: from.toISOString().slice(0, 10), to: to.toISOString().slice(0, 10) });
+  };
+
+  // --- Derived stats (filtered by date range) ---
   const stats = useMemo(() => {
-    const total = donations.reduce((s, d) => s + Number(d.amount || 0), 0);
+    const fromMs = new Date(range.from + "T00:00:00").getTime();
+    const toMs = new Date(range.to + "T23:59:59").getTime();
+    const inRange = donations.filter((d) => {
+      const t = new Date(d.created_at).getTime();
+      return t >= fromMs && t <= toMs;
+    });
+
+    const total = inRange.reduce((s, d) => s + Number(d.amount || 0), 0);
     const byDay = new Map<string, number>();
-    for (const d of donations) {
+    for (const d of inRange) {
       const day = new Date(d.created_at).toISOString().slice(0, 10);
       byDay.set(day, (byDay.get(day) ?? 0) + Number(d.amount || 0));
     }
-    const days = [...byDay.entries()].sort(([a], [b]) => a.localeCompare(b))
-      .slice(-30)
-      .map(([date, amount]) => ({ date: date.slice(5), amount: Math.round(amount) }));
+    // Fill gaps for a continuous line
+    const days: { date: string; amount: number }[] = [];
+    for (let t = fromMs; t <= toMs; t += 86400000) {
+      const iso = new Date(t).toISOString().slice(0, 10);
+      days.push({ date: iso.slice(5), amount: Math.round(byDay.get(iso) ?? 0) });
+    }
 
     const byCause = new Map<string, number>();
-    for (const d of donations) {
+    for (const d of inRange) {
       const c = d.cause || "General";
       byCause.set(c, (byCause.get(c) ?? 0) + Number(d.amount || 0));
     }
     const causes = [...byCause.entries()].map(([name, value]) => ({ name, value: Math.round(value) }));
 
     const byCurrency = new Map<string, number>();
-    for (const d of donations) {
+    for (const d of inRange) {
       byCurrency.set(d.currency, (byCurrency.get(d.currency) ?? 0) + Number(d.amount || 0));
     }
     const currencies = [...byCurrency.entries()].map(([name, value]) => ({ name, value: Math.round(value) }));
 
     return {
       total, days, causes, currencies,
-      donationCount: donations.length,
+      donationCount: inRange.length,
       messageCount: messages.length,
       userCount: users.length,
       pendingInvites: invitations.filter((i) => !i.accepted_at).length,
     };
-  }, [donations, messages, users, invitations]);
+  }, [donations, messages, users, invitations, range]);
 
   // --- Handlers ---
   const handleClaim = async () => {
