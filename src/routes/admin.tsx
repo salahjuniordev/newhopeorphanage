@@ -338,6 +338,20 @@ function OverviewTab({ stats, recent, range, setRange, setPreset }: {
 }) {
   return (
     <div className="adm-content">
+      <div className="adm-card" style={{ padding: "14px 18px" }}>
+        <div className="adm-toolbar" style={{ flexWrap: "wrap", gap: 10 }}>
+          <strong style={{ fontSize: 13, color: "#5a4730" }}>Date range</strong>
+          <input type="date" className="adm-input" value={range.from} max={range.to}
+            onChange={(e) => setRange({ ...range, from: e.target.value })} />
+          <span style={{ color: "#8a7050" }}>→</span>
+          <input type="date" className="adm-input" value={range.to} min={range.from}
+            onChange={(e) => setRange({ ...range, to: e.target.value })} />
+          <button className="adm-btn adm-btn-ghost" onClick={() => setPreset(7)}>7d</button>
+          <button className="adm-btn adm-btn-ghost" onClick={() => setPreset(30)}>30d</button>
+          <button className="adm-btn adm-btn-ghost" onClick={() => setPreset(90)}>90d</button>
+          <button className="adm-btn adm-btn-ghost" onClick={() => setPreset(365)}>1y</button>
+        </div>
+      </div>
       <div className="adm-kpis">
         <Kpi label="Total Raised" value={`$${stats.total.toLocaleString()}`} tone="primary" hint={`across ${stats.donationCount} donations`} />
         <Kpi label="Donations" value={stats.donationCount.toString()} tone="ok" />
@@ -347,7 +361,7 @@ function OverviewTab({ stats, recent, range, setRange, setPreset }: {
 
       <div className="adm-grid-2">
         <div className="adm-card">
-          <div className="adm-card-head"><h3>Donations trend (last 30 days)</h3></div>
+          <div className="adm-card-head"><h3>Donations trend ({range.from} → {range.to})</h3></div>
           <div className="adm-chart">
             <ResponsiveContainer width="100%" height={280}>
               <AreaChart data={stats.days}>
