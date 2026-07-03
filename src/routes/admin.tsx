@@ -602,9 +602,18 @@ function UsersTab({ rows, selfId, onGrant, onRevoke }: {
   );
 }
 
-function InvitesTab({ rows, onInvite, onRevoke }: {
+const INVITE_EXPIRY_DAYS = 14;
+type InviteStatus = "accepted" | "expired" | "pending";
+function inviteStatus(r: InvitationRow): InviteStatus {
+  if (r.accepted_at) return "accepted";
+  const ageDays = (Date.now() - new Date(r.created_at).getTime()) / 86400000;
+  return ageDays > INVITE_EXPIRY_DAYS ? "expired" : "pending";
+}
+
+function InvitesTab({ rows, onInvite, onResend, onRevoke }: {
   rows: InvitationRow[];
   onInvite: (email: string, role: "admin" | "moderator") => Promise<void>;
+  onResend: (email: string, role: "admin" | "moderator") => Promise<void>;
   onRevoke: (id: string) => Promise<void>;
 }) {
   const [email, setEmail] = useState("");
@@ -612,11 +621,14 @@ function InvitesTab({ rows, onInvite, onRevoke }: {
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const [resending, setResending] = useState<string | null>(null);
+  const [flash, setFlash] = useState<string | null>(null);
+  const [filter, setFilter] = useState<"all" | InviteStatus>("all");
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErr(null); setBusy(true);
-    try { await onInvite(email, role); setEmail(""); }
+    try { await onInvite(email, role); setEmail(""); setFlash(`Invitation sent to ${email}`); setTimeout(() => setFlash(null), 3500); }
     catch (e) { setErr(e instanceof Error ? e.message : "Failed"); }
     finally { setBusy(false); }
   };
@@ -627,6 +639,27 @@ function InvitesTab({ rows, onInvite, onRevoke }: {
     setCopied(token);
     setTimeout(() => setCopied(null), 1600);
   };
+
+  const doResend = async (r: InvitationRow) => {
+    setResending(r.id);
+    try {
+      await onResend(r.email, r.role as "admin" | "moderator");
+      setFlash(`Invitation re-sent to ${r.email}`);
+      setTimeout(() => setFlash(null), 3500);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Resend failed");
+    } finally {
+      setResending(null);
+    }
+  };
+
+  const counts = useMemo(() => {
+    const c = { all: rows.length, pending: 0, accepted: 0, expired: 0 };
+    for (const r of rows) c[inviteStatus(r)]++;
+    return c;
+  }, [rows]);
+
+  const visible = filter === "all" ? rows : rows.filter((r) => inviteStatus(r) === filter);
 
   return (
     <div className="adm-content">
@@ -644,38 +677,60 @@ function InvitesTab({ rows, onInvite, onRevoke }: {
           </button>
         </form>
         {err && <div className="adm-alert adm-danger">{err}</div>}
+        {flash && <div className="adm-alert" style={{ background: "#e8f8f0", color: "#1e7a4d", border: "1px solid #b2e4cc", padding: 10, borderRadius: 10, marginTop: 10 }}>{flash}</div>}
         <p className="adm-hint">
-          An invitation email is sent when possible. When the invitee signs up with this email, they receive the role automatically.
+          Invitations expire after {INVITE_EXPIRY_DAYS} days. When the invitee signs up with this email, they receive the role automatically.
         </p>
       </div>
 
       <div className="adm-card">
-        <div className="adm-card-head"><h3>All invitations</h3></div>
+        <div className="adm-card-head" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
+          <h3>All invitations</h3>
+          <div className="adm-toolbar" style={{ gap: 6 }}>
+            {(["all", "pending", "accepted", "expired"] as const).map((s) => (
+              <button key={s} className={`adm-btn adm-btn-ghost ${filter === s ? "is-on" : ""}`}
+                style={filter === s ? { background: "#f19100", color: "#fff", borderColor: "#f19100" } : undefined}
+                onClick={() => setFilter(s)}>
+                {s[0].toUpperCase() + s.slice(1)} ({counts[s]})
+              </button>
+            ))}
+          </div>
+        </div>
         <div className="adm-table-wrap">
           <table className="adm-table">
             <thead><tr><th>Email</th><th>Role</th><th>Status</th><th>Sent</th><th></th></tr></thead>
             <tbody>
-              {rows.map((r) => (
-                <tr key={r.id}>
-                  <td>{r.email}</td>
-                  <td><span className={`adm-chip ${r.role === "admin" ? "is-admin" : "is-mod"}`}>{r.role}</span></td>
-                  <td>{r.accepted_at
-                    ? <span className="adm-chip is-ok">Accepted</span>
-                    : <span className="adm-chip is-warn">Pending</span>}</td>
-                  <td>{new Date(r.created_at).toLocaleDateString()}</td>
-                  <td className="adm-t-actions">
-                    <button className="adm-icon-btn" onClick={() => copyLink(r.token)}>
-                      {copied === r.token ? <><Check size={14} /> Copied</> : <><Copy size={14} /> Copy link</>}
-                    </button>
-                    {!r.accepted_at && (
-                      <button className="adm-icon-btn adm-danger" onClick={() => onRevoke(r.id)}>
-                        <Trash2 size={14} />
+              {visible.map((r) => {
+                const status = inviteStatus(r);
+                return (
+                  <tr key={r.id}>
+                    <td>{r.email}</td>
+                    <td><span className={`adm-chip ${r.role === "admin" ? "is-admin" : "is-mod"}`}>{r.role}</span></td>
+                    <td>
+                      {status === "accepted" && <span className="adm-chip is-ok">✓ Accepted {r.accepted_at ? `· ${new Date(r.accepted_at).toLocaleDateString()}` : ""}</span>}
+                      {status === "pending" && <span className="adm-chip is-warn">⏳ Pending</span>}
+                      {status === "expired" && <span className="adm-chip adm-danger" style={{ background: "#fdecec", color: "#b03333" }}>⏱ Expired</span>}
+                    </td>
+                    <td>{new Date(r.created_at).toLocaleDateString()}</td>
+                    <td className="adm-t-actions">
+                      {status !== "accepted" && (
+                        <button className="adm-icon-btn" disabled={resending === r.id} onClick={() => doResend(r)}>
+                          <Mail size={14} /> {resending === r.id ? "Sending…" : "Resend"}
+                        </button>
+                      )}
+                      <button className="adm-icon-btn" onClick={() => copyLink(r.token)}>
+                        {copied === r.token ? <><Check size={14} /> Copied</> : <><Copy size={14} /> Copy link</>}
                       </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-              {rows.length === 0 && <tr><td colSpan={5} className="adm-empty">No invitations yet.</td></tr>}
+                      {status !== "accepted" && (
+                        <button className="adm-icon-btn adm-danger" title="Revoke" onClick={() => onRevoke(r.id)}>
+                          <Trash2 size={14} />
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+              {visible.length === 0 && <tr><td colSpan={5} className="adm-empty">No invitations in this view.</td></tr>}
             </tbody>
           </table>
         </div>
