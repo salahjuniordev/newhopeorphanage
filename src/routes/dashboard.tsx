@@ -32,8 +32,13 @@ function Dashboard() {
     supabase.auth.getSession().then(async ({ data }) => {
       setSession(data.session);
       if (!data.session) { navigate({ to: "/login", replace: true }); return; }
-      const { data: r } = await supabase.rpc("has_role", { _user_id: data.session.user.id, _role: "admin" });
-      setIsAdmin(r === true);
+      const { data: r } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", data.session.user.id)
+        .eq("role", "admin")
+        .maybeSingle();
+      setIsAdmin(!!r);
     });
     return () => sub.subscription.unsubscribe();
   }, [navigate]);
