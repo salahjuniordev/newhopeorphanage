@@ -49,6 +49,8 @@ function DonationPage() {
   }, []);
 
   const finalAmount = custom ? Number(custom) : amount;
+  const [receiptId, setReceiptId] = useState<string>("");
+  const [receiptDate, setReceiptDate] = useState<string>("");
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,7 +58,7 @@ function DonationPage() {
     if (!finalAmount || finalAmount <= 0) { setError("Please enter a valid amount."); return; }
     if (!name.trim() || !email.trim()) { setError("Please enter your name and email."); return; }
     setLoading(true);
-    const { error: err } = await supabase.from("donations").insert({
+    const { data, error: err } = await supabase.from("donations").insert({
       user_id: userId,
       donor_name: name.trim(),
       donor_email: email.trim(),
@@ -64,10 +66,55 @@ function DonationPage() {
       currency,
       cause: CAUSES.find((c) => c.id === cause)?.label ?? "General",
       message: message.trim() || null,
-    });
+    }).select("id, created_at").single();
     setLoading(false);
     if (err) { setError(err.message); return; }
+    setReceiptId(data?.id ?? "");
+    setReceiptDate(data?.created_at ?? new Date().toISOString());
     setDone(true);
+  };
+
+  const downloadReceipt = () => {
+    const causeLabel = CAUSES.find((c) => c.id === cause)?.label ?? "General";
+    const shortId = (receiptId || crypto.randomUUID()).slice(0, 8).toUpperCase();
+    const dateStr = new Date(receiptDate || Date.now()).toLocaleString();
+    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Donation Receipt ${shortId}</title>
+<style>
+body{font-family:'Helvetica Neue',Arial,sans-serif;color:#1a1208;max-width:720px;margin:40px auto;padding:0 24px}
+.hd{display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #f19100;padding-bottom:16px}
+.hd h1{font-family:Georgia,serif;font-size:28px;margin:0;color:#c97200}
+.hd small{color:#8a7050}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;margin:24px 0}
+.grid div{padding:10px 0;border-bottom:1px dashed #eadfc7}
+.grid span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#8a7050}
+.grid strong{font-size:15px}
+.amt{background:linear-gradient(135deg,#fff3df,#ffe6c2);padding:20px;border-radius:14px;text-align:center;margin:24px 0}
+.amt div:first-child{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#8a7050}
+.amt div:last-child{font-size:36px;font-weight:800;color:#c97200;margin-top:6px}
+.ft{margin-top:32px;padding-top:16px;border-top:1px solid #eadfc7;color:#6a553a;font-size:13px;line-height:1.6}
+.thx{font-family:Georgia,serif;font-style:italic;color:#c97200;text-align:center;font-size:18px;margin:24px 0}
+@media print{.noprint{display:none}}
+.noprint{text-align:center;margin-top:24px}
+button{padding:10px 24px;background:#f19100;color:#fff;border:0;border-radius:8px;font-size:14px;cursor:pointer;font-weight:600}
+</style></head><body>
+<div class="hd"><div><h1>New Hope Orphanage</h1><small>Yaoundé, Cameroon</small></div><div style="text-align:right"><strong>Donation Receipt</strong><br><small>#${shortId}</small></div></div>
+<div class="amt"><div>Total Contribution</div><div>${currency} ${finalAmount.toFixed(2)}</div></div>
+<div class="grid">
+<div><span>Donor</span><strong>${name}</strong></div>
+<div><span>Email</span><strong>${email}</strong></div>
+<div><span>Cause</span><strong>${causeLabel}</strong></div>
+<div><span>Date</span><strong>${dateStr}</strong></div>
+<div><span>Receipt No.</span><strong>${shortId}</strong></div>
+<div><span>Payment Status</span><strong>Recorded — pending processing</strong></div>
+</div>
+${message ? `<div style="padding:14px;background:#fffaf0;border-radius:10px"><span style="font-size:11px;color:#8a7050;text-transform:uppercase;letter-spacing:1px">Message</span><br>${message.replace(/</g, "&lt;")}</div>` : ""}
+<div class="thx">Thank you for giving a child a future.</div>
+<div class="ft">This receipt confirms your generous contribution to New Hope Orphanage. Our team will contact you shortly with payment instructions. Keep this receipt for your records — it may be used for tax-deductible purposes where applicable.<br><br>New Hope Orphanage · contact@newhopeorphanage.org</div>
+<div class="noprint"><button onclick="window.print()">Download / Print PDF</button></div>
+<script>setTimeout(()=>window.print(),400)</script>
+</body></html>`;
+    const w = window.open("", "_blank");
+    if (w) { w.document.write(html); w.document.close(); }
   };
 
   if (done) {
