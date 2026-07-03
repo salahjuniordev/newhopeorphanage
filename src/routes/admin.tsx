@@ -77,11 +77,14 @@ function AdminApp() {
       setUserId(sess.session.user.id);
       setUserEmail(sess.session.user.email ?? "");
 
-      const { data: roleData } = await supabase.rpc("has_role", {
-        _user_id: sess.session.user.id, _role: "admin",
-      });
+      const { data: roleData } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", sess.session.user.id)
+        .eq("role", "admin")
+        .maybeSingle();
       if (cancelled) return;
-      if (roleData === true) {
+      if (roleData) {
         setIsAdmin(true);
       } else {
         // Check if there are zero admins so we can offer bootstrap
