@@ -43,7 +43,14 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const stored = localStorage.getItem("nho-lang") as Lang | null;
-      if (stored === "en" || stored === "fr") setLangState(stored);
+      const initial: Lang =
+        stored === "en" || stored === "fr"
+          ? stored
+          : navigator.language?.toLowerCase().startsWith("fr")
+            ? "fr"
+            : "en";
+      setLangState(initial);
+      document.documentElement.lang = initial;
     } catch {
       /* noop */
     }
