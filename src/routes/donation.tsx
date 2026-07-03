@@ -126,10 +126,11 @@ ${message ? `<div style="padding:14px;background:#fffaf0;border-radius:10px"><sp
           <h1>Thank you, {name.split(" ")[0]} 🧡</h1>
           <p>Your pledge of <strong>{currency} {finalAmount.toFixed(2)}</strong> toward <strong>{CAUSES.find((c) => c.id === cause)?.label}</strong> has been recorded. Our team will reach out shortly with payment details.</p>
           <div className="nho-donate-thanks-cta">
+            <button type="button" onClick={downloadReceipt} className="nho-donate-btn-primary">Download receipt (PDF)</button>
             {userId ? (
-              <Link to="/dashboard" className="nho-donate-btn-primary">View my dashboard</Link>
+              <Link to="/dashboard" className="nho-donate-btn-ghost">View my dashboard</Link>
             ) : (
-              <Link to="/login" className="nho-donate-btn-primary">Create an account to track</Link>
+              <Link to="/login" className="nho-donate-btn-ghost">Create an account to track</Link>
             )}
             <Link to="/" className="nho-donate-btn-ghost">Back to home</Link>
           </div>
