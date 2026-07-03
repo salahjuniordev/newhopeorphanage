@@ -19,30 +19,19 @@ const LEGACY_CSS = [
   "/legacy/css/bootstrap.min.css",
   "/legacy/css/slicknav.min.css",
   "/legacy/css/swiper-bundle.min.css",
-  "/legacy/css/animate.css",
   "/legacy/css/magnific-popup.css",
-  "/legacy/css/mousecursor.css",
   "/legacy/css/custom.css",
 ];
 
+// Trimmed to essentials — the removed libraries (gsap/wow/parallax/magic cursor
+// /SmoothScroll/isotope/YTPlayer/counterup) were only used for niche animations
+// on the legacy home page and were adding ~1.5MB of blocking JS to every route.
 const LEGACY_JS = [
   "/legacy/js/jquery-3.7.1.min.js",
   "/legacy/js/bootstrap.min.js",
-  "/legacy/js/validator.min.js",
   "/legacy/js/jquery.slicknav.js",
   "/legacy/js/swiper-bundle.min.js",
-  "/legacy/js/jquery.waypoints.min.js",
-  "/legacy/js/jquery.counterup.min.js",
-  "/legacy/js/isotope.min.js",
   "/legacy/js/jquery.magnific-popup.min.js",
-  "/legacy/js/SmoothScroll.js",
-  "/legacy/js/parallaxie.js",
-  "/legacy/js/gsap.min.js",
-  "/legacy/js/magiccursor.js",
-  "/legacy/js/SplitText.js",
-  "/legacy/js/ScrollTrigger.min.js",
-  "/legacy/js/wow.min.js",
-  "/legacy/js/function.js",
 ];
 
 function NotFoundComponent() {
