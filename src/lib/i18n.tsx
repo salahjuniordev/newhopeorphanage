@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { applyLang } from "./translate-dom";
 
 export type Lang = "en" | "fr";
 
@@ -39,6 +40,17 @@ const Ctx = createContext<I18nCtx>({
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>("en");
+  const rafRef = useRef<number | null>(null);
+
+  // Debounced re-translation of the whole page body.
+  const schedule = (l: Lang) => {
+    if (typeof window === "undefined") return;
+    if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = null;
+      try { applyLang(document.body, l); } catch { /* noop */ }
+    });
+  };
 
   useEffect(() => {
     try {
@@ -51,19 +63,27 @@ export function I18nProvider({ children }: { children: ReactNode }) {
             : "en";
       setLangState(initial);
       document.documentElement.lang = initial;
+      schedule(initial);
     } catch {
       /* noop */
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Observe DOM changes (route swaps, legacy HTML mounts) and re-translate.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mo = new MutationObserver(() => schedule(lang));
+    mo.observe(document.body, { childList: true, subtree: true, characterData: false });
+    return () => mo.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lang]);
 
   const setLang = (l: Lang) => {
     setLangState(l);
-    try {
-      localStorage.setItem("nho-lang", l);
-    } catch {
-      /* noop */
-    }
+    try { localStorage.setItem("nho-lang", l); } catch { /* noop */ }
     document.documentElement.lang = l;
+    schedule(l);
   };
 
   const t = (key: keyof typeof NAV_DICT) => NAV_DICT[key]?.[lang] ?? NAV_DICT[key]?.en ?? String(key);
@@ -71,3 +91,4 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 }
 
 export const useI18n = () => useContext(Ctx);
+
