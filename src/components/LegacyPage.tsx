@@ -23,6 +23,8 @@ declare global {
 // layout (fills its container) and shows the broken filename so we know what's
 // missing without breaking the surrounding design.
 const PLACEHOLDER_STYLE = `
+.preloader{display:none !important}
+
 .nho-asset-fallback{
   display:flex;align-items:center;justify-content:center;text-align:center;
   width:100%;height:100%;min-height:160px;
