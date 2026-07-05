@@ -78,34 +78,64 @@ export type Database = {
         Row: {
           amount: number
           cause: string | null
+          country: string | null
           created_at: string
           currency: string
           donor_email: string
           donor_name: string
+          external_reference: string | null
           id: string
           message: string | null
+          operator: string | null
+          phone: string | null
+          provider: string
+          provider_link: string | null
+          provider_message: string | null
+          provider_transaction_id: string | null
+          status: string
+          updated_at: string
           user_id: string | null
         }
         Insert: {
           amount: number
           cause?: string | null
+          country?: string | null
           created_at?: string
           currency?: string
           donor_email: string
           donor_name: string
+          external_reference?: string | null
           id?: string
           message?: string | null
+          operator?: string | null
+          phone?: string | null
+          provider?: string
+          provider_link?: string | null
+          provider_message?: string | null
+          provider_transaction_id?: string | null
+          status?: string
+          updated_at?: string
           user_id?: string | null
         }
         Update: {
           amount?: number
           cause?: string | null
+          country?: string | null
           created_at?: string
           currency?: string
           donor_email?: string
           donor_name?: string
+          external_reference?: string | null
           id?: string
           message?: string | null
+          operator?: string | null
+          phone?: string | null
+          provider?: string
+          provider_link?: string | null
+          provider_message?: string | null
+          provider_transaction_id?: string | null
+          status?: string
+          updated_at?: string
           user_id?: string | null
         }
         Relationships: []
