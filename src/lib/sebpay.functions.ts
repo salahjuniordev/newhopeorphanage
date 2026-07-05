@@ -44,8 +44,6 @@ export const initiateSebpayDonation = createServerFn({ method: "POST" })
     return data;
   })
   .handler(async ({ data }) => {
-    const { getRequest } = await import("@tanstack/react-start/server");
-    const request = getRequest();
     const { publicKey, secretKey } = getKeys();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
