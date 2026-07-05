@@ -19,6 +19,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiPublicWebhooksSebpayRouteImport } from './routes/api/public/webhooks/sebpay'
 
 const VideoGalleryRoute = VideoGalleryRouteImport.update({
   id: '/video-gallery',
@@ -70,6 +71,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicWebhooksSebpayRoute = ApiPublicWebhooksSebpayRouteImport.update({
+  id: '/api/public/webhooks/sebpay',
+  path: '/api/public/webhooks/sebpay',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/team': typeof TeamRoute
   '/team-single': typeof TeamSingleRoute
   '/video-gallery': typeof VideoGalleryRoute
+  '/api/public/webhooks/sebpay': typeof ApiPublicWebhooksSebpayRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/team': typeof TeamRoute
   '/team-single': typeof TeamSingleRoute
   '/video-gallery': typeof VideoGalleryRoute
+  '/api/public/webhooks/sebpay': typeof ApiPublicWebhooksSebpayRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/team': typeof TeamRoute
   '/team-single': typeof TeamSingleRoute
   '/video-gallery': typeof VideoGalleryRoute
+  '/api/public/webhooks/sebpay': typeof ApiPublicWebhooksSebpayRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
     | '/team'
     | '/team-single'
     | '/video-gallery'
+    | '/api/public/webhooks/sebpay'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | '/team'
     | '/team-single'
     | '/video-gallery'
+    | '/api/public/webhooks/sebpay'
   id:
     | '__root__'
     | '/'
@@ -145,6 +156,7 @@ export interface FileRouteTypes {
     | '/team'
     | '/team-single'
     | '/video-gallery'
+    | '/api/public/webhooks/sebpay'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -158,6 +170,7 @@ export interface RootRouteChildren {
   TeamRoute: typeof TeamRoute
   TeamSingleRoute: typeof TeamSingleRoute
   VideoGalleryRoute: typeof VideoGalleryRoute
+  ApiPublicWebhooksSebpayRoute: typeof ApiPublicWebhooksSebpayRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -232,6 +245,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/webhooks/sebpay': {
+      id: '/api/public/webhooks/sebpay'
+      path: '/api/public/webhooks/sebpay'
+      fullPath: '/api/public/webhooks/sebpay'
+      preLoaderRoute: typeof ApiPublicWebhooksSebpayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -246,6 +266,7 @@ const rootRouteChildren: RootRouteChildren = {
   TeamRoute: TeamRoute,
   TeamSingleRoute: TeamSingleRoute,
   VideoGalleryRoute: VideoGalleryRoute,
+  ApiPublicWebhooksSebpayRoute: ApiPublicWebhooksSebpayRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
