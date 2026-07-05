@@ -84,7 +84,7 @@ export const initiateSebpayDonation = createServerFn({ method: "POST" })
       operator,
       country,
       external_reference,
-      callback_url: getCallbackUrl(request),
+      callback_url: getCallbackUrl(),
     };
     if (data.otp_code) body.otp_code = data.otp_code;
 
