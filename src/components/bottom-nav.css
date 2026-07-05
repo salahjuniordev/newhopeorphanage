@@ -26,9 +26,8 @@
 body{ padding-bottom:84px; }
 
 @media (min-width: 992px){
-  .nho-bottom-nav{ bottom:20px; }
-  .nho-bn-item{ min-width:74px; padding:9px 16px; }
-  .nho-bn-label{ font-size:12px; }
+  .nho-bottom-nav{display:none}
+  body{padding-bottom:0}
 }
 @media (max-width:380px){
   .nho-bn-item{ min-width:54px; padding:7px 9px; }

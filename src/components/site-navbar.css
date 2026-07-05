@@ -113,11 +113,23 @@ html{scroll-behavior:smooth;scroll-padding-top:84px}
   .nho-burger{display:inline-flex}
   .nho-btn-ghost{display:none}
 }
+@media (max-width: 1100px){
+  .nho-btn-cta{display:none}
+}
 @media (max-width: 560px){
   .nho-nav-inner{padding:10px 16px;gap:12px}
   .nho-brand img{height:40px}
-  .nho-btn-cta{display:none}
 }
+
+/* Hide legacy decorative floating stickers/badges site-wide */
+.legacy-root .need-fund-box,
+.legacy-root .donate-now-box,
+.legacy-root .helthcare-support-circle,
+.legacy-root .client-review-box,
+.need-fund-box,
+.donate-now-box,
+.helthcare-support-circle,
+.client-review-box{display:none !important}
 
 
 /* Hide legacy header that ships inside each legacy HTML page */
