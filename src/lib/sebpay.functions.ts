@@ -24,9 +24,12 @@ function getKeys() {
   return { publicKey, secretKey };
 }
 
-function getCallbackUrl(request: Request) {
-  const origin = new URL(request.url).origin;
-  return `${origin}/api/public/webhooks/sebpay`;
+function getCallbackUrl() {
+  const origin =
+    process.env.SITE_URL ??
+    process.env.PUBLIC_SITE_URL ??
+    "https://newhopeorphanage.lovable.app";
+  return `${origin.replace(/\/$/, "")}/api/public/webhooks/sebpay`;
 }
 
 export const initiateSebpayDonation = createServerFn({ method: "POST" })
