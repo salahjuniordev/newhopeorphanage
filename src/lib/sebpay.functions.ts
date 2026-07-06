@@ -130,7 +130,14 @@ export const initiateSebpayDonation = createServerFn({ method: "POST" })
     }
 
     if (!providerRes.ok || parsed.success === false) {
-      const msg = parsed.message ?? parsed.data?.message ?? `SebPay error ${providerRes.status}`;
+      const baseMsg = parsed.message ?? parsed.data?.message ?? `SebPay error ${providerRes.status}`;
+      const detail = text && text.length < 500 ? ` | raw: ${text}` : "";
+      const msg = `${baseMsg} [HTTP ${providerRes.status}]${detail}`;
+      console.error("[sebpay] initiate failed", {
+        status: providerRes.status,
+        body: text.slice(0, 800),
+        request: body,
+      });
       await supabaseAdmin
         .from("donations")
         .update({
