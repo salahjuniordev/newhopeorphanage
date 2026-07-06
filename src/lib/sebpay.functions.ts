@@ -1,4 +1,24 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getRequestHeader } from "@tanstack/react-start/server";
+import { createClient } from "@supabase/supabase-js";
+
+async function getOptionalUserId(): Promise<string | null> {
+  try {
+    const auth = getRequestHeader("authorization") ?? getRequestHeader("Authorization");
+    if (!auth?.toLowerCase().startsWith("bearer ")) return null;
+    const token = auth.slice(7).trim();
+    if (!token) return null;
+    const client = createClient(
+      process.env.SUPABASE_URL!,
+      process.env.SUPABASE_PUBLISHABLE_KEY!,
+      { auth: { persistSession: false, autoRefreshToken: false } },
+    );
+    const { data } = await client.auth.getUser(token);
+    return data.user?.id ?? null;
+  } catch {
+    return null;
+  }
+}
 
 const SEBPAY_BASE = "https://newapi.sebpay.bj/api/v1";
 const DEFAULT_PUBLIC_KEY = "pk_test_FSx10KtxDhAt4VGlepQ7awviBaEjQeiukfxAGwz7";
