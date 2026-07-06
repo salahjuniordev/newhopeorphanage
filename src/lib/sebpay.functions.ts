@@ -66,6 +66,7 @@ export const initiateSebpayDonation = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { publicKey, secretKey } = getKeys();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const userId = await getOptionalUserId();
 
     // Create donation row first (status pending) — id becomes external_reference
     const external_reference = `NHO-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
@@ -88,6 +89,7 @@ export const initiateSebpayDonation = createServerFn({ method: "POST" })
         provider: "sebpay",
         external_reference,
         status: "pending",
+        user_id: userId,
       })
       .select("id, external_reference")
       .single();
