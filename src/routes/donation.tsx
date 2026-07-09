@@ -265,6 +265,7 @@ button{padding:10px 24px;background:#f19100;color:#fff;border:0;border-radius:8p
             )}
             <Link to="/" className="nho-donate-btn-ghost">Back to home</Link>
           </div>
+          <DonationTimeline events={tx.events} externalReference={tx.external_reference} />
         </div>
       </div>
     );
