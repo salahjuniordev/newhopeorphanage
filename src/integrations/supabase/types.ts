@@ -74,6 +74,41 @@ export type Database = {
         }
         Relationships: []
       }
+      donation_events: {
+        Row: {
+          created_at: string
+          donation_id: string
+          event: string
+          id: string
+          message: string | null
+          provider_status: string | null
+        }
+        Insert: {
+          created_at?: string
+          donation_id: string
+          event: string
+          id?: string
+          message?: string | null
+          provider_status?: string | null
+        }
+        Update: {
+          created_at?: string
+          donation_id?: string
+          event?: string
+          id?: string
+          message?: string | null
+          provider_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "donation_events_donation_id_fkey"
+            columns: ["donation_id"]
+            isOneToOne: false
+            referencedRelation: "donations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       donations: {
         Row: {
           amount: number
@@ -85,6 +120,7 @@ export type Database = {
           donor_name: string
           external_reference: string | null
           id: string
+          idempotency_key: string | null
           message: string | null
           operator: string | null
           phone: string | null
@@ -106,6 +142,7 @@ export type Database = {
           donor_name: string
           external_reference?: string | null
           id?: string
+          idempotency_key?: string | null
           message?: string | null
           operator?: string | null
           phone?: string | null
@@ -127,6 +164,7 @@ export type Database = {
           donor_name?: string
           external_reference?: string | null
           id?: string
+          idempotency_key?: string | null
           message?: string | null
           operator?: string | null
           phone?: string | null
