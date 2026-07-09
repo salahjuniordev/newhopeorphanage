@@ -1,14 +1,21 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Heart, LogOut, User as UserIcon, Mail, Phone, Sparkles, Calendar } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { Heart, LogOut, User as UserIcon, Mail, Phone, Sparkles, Calendar, ChevronDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Session } from "@supabase/supabase-js";
+import { getDonationEvents, type DonationEvent } from "@/lib/sebpay.functions";
+import { DonationTimeline } from "@/components/DonationTimeline";
 
 export const Route = createFileRoute("/dashboard")({
  component: Dashboard,
 });
 
-interface Donation { id: string; amount: number; currency: string; cause: string | null; created_at: string; message: string | null }
+interface Donation {
+ id: string; amount: number; currency: string; cause: string | null;
+ created_at: string; message: string | null;
+ status: string; external_reference: string | null; provider_message: string | null;
+}
 interface Profile { full_name: string | null; phone: string | null; avatar_url: string | null }
 
 function Dashboard() {
