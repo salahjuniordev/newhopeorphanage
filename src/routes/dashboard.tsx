@@ -183,15 +183,10 @@ function Dashboard() {
  ): (
  <div className="nho-dash-table">
  <div className="nho-dash-thead">
- <span>Date</span><span>Cause</span><span>Message</span><span style={{textAlign:"right"}}>Amount</span>
+ <span>Date</span><span>Cause</span><span>Status</span><span>Reference</span><span style={{textAlign:"right"}}>Amount</span>
  </div>
  {donations.map((d) => (
- <div key={d.id} className="nho-dash-trow">
- <span>{new Date(d.created_at).toLocaleDateString()}</span>
- <span>{d.cause?? "General"}</span>
- <span className="muted">{d.message?? "—"}</span>
- <span style={{textAlign:"right",fontWeight:700,color:"#c97200"}}>{d.currency} {Number(d.amount).toFixed(2)}</span>
- </div>
+ <DonationRow key={d.id} d={d} />
  ))}
  </div>
  )}
