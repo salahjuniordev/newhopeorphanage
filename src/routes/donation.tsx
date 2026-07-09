@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Heart, ShieldCheck, Sparkles, Users, Loader2, CheckCircle2, XCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { initiateSebpayDonation, checkSebpayStatus } from "@/lib/sebpay.functions";
+import { initiateSebpayDonation, checkSebpayStatus, type DonationEvent as DonationTimelineEvent } from "@/lib/sebpay.functions";
 
 export const Route = createFileRoute("/donation")({
   head: () => ({
