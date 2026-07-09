@@ -27,6 +27,7 @@ interface DonationRow {
  id: string; amount: number; currency: string; cause: string | null;
  donor_name: string; donor_email: string; message: string | null;
  created_at: string; user_id: string | null;
+ status: string; external_reference: string | null; provider_transaction_id: string | null;
 }
 interface MessageRow {
  id: string; name: string; email: string; phone: string | null;
