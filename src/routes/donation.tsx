@@ -110,7 +110,12 @@ function DonationPage() {
     pollRef.current = window.setInterval(async () => {
       try {
         const res = await check({ data: { external_reference: tx.external_reference } });
-        setTx((prev) => prev ? { ...prev, status: res.status, message: res.message ?? prev.message } : prev);
+        setTx((prev) => prev ? {
+          ...prev,
+          status: res.status,
+          message: res.message ?? prev.message,
+          events: res.events ?? prev.events,
+        } : prev);
       } catch {
         /* ignore transient errors */
       }
