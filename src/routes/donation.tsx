@@ -403,60 +403,6 @@ button{padding:10px 24px;background:#f19100;color:#fff;border:0;border-radius:8p
   );
 }
 
-// ------------------------------------------------------------------
-// Shared donation timeline component (used on the status screen and
-// the client / admin dashboards).
-// ------------------------------------------------------------------
-export function DonationTimeline({
-  events,
-  externalReference,
-  compact = false,
-}: {
-  events: DonationTimelineEvent[];
-  externalReference?: string | null;
-  compact?: boolean;
-}) {
-  const labels: Record<string, string> = {
-    created: "Collection created",
-    provider_accepted: "Provider accepted request",
-    awaiting_confirmation: "Awaiting phone confirmation",
-    completed: "Payment completed",
-    failed: "Payment failed",
-  };
-  const label = (e: string) => labels[e] ?? e.replace(/_/g, " ").replace(/^./, (c) => c.toUpperCase());
-  const dotColor = (e: string, s: string | null) => {
-    if (e === "completed" || s === "approved" || s === "success") return "#1f9d55";
-    if (e === "failed" || s === "rejected" || s === "failed") return "#c73838";
-    if (e === "created" || e === "provider_accepted") return "#f19100";
-    return "#8a7050";
-  };
-  return (
-    <div className={`nho-tl ${compact ? "is-compact" : ""}`}>
-      <div className="nho-tl-head">
-        <strong>Donation timeline</strong>
-        {externalReference && <span className="nho-tl-ref">Ref: {externalReference}</span>}
-      </div>
-      {events.length === 0 ? (
-        <div className="nho-tl-empty">No events yet.</div>
-      ) : (
-        <ol className="nho-tl-list">
-          {events.map((ev) => (
-            <li key={ev.id}>
-              <span className="nho-tl-dot" style={{ background: dotColor(ev.event, ev.provider_status) }} />
-              <div className="nho-tl-body">
-                <div className="nho-tl-row">
-                  <strong>{label(ev.event)}</strong>
-                  <time>{new Date(ev.created_at).toLocaleString()}</time>
-                </div>
-                {ev.message && <p>{ev.message}</p>}
-              </div>
-            </li>
-          ))}
-        </ol>
-      )}
-    </div>
-  );
-}
 
 const DONATE_CSS = `
 .nho-donate-wrap{max-width:1180px;margin:0 auto;padding:48px 22px 60px;font-family:'Onest','Inter',system-ui,sans-serif;color:#1a1208}
