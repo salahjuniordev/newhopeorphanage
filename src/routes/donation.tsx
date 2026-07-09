@@ -70,8 +70,16 @@ function DonationPage() {
     provider_link: string | null;
     status: string;
     message: string | null;
+    events: DonationTimelineEvent[];
   } | null>(null);
   const pollRef = useRef<number | null>(null);
+  // Stable idempotency key per form session — resubmits reuse the same key so
+  // the server never creates a duplicate donation row / duplicate charge.
+  const idempotencyKeyRef = useRef<string>(
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `nho-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
+  );
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
