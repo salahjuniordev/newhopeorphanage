@@ -214,6 +214,45 @@ function Dashboard() {
  );
 }
 
+function DonationRow({ d }: { d: Donation }) {
+ const [open, setOpen] = useState(false);
+ const [events, setEvents] = useState<DonationEvent[] | null>(null);
+ const [loading, setLoading] = useState(false);
+ const fetchEvents = useServerFn(getDonationEvents);
+ const toggle = async () => {
+ const next = !open; setOpen(next);
+ if (next && !events) {
+ setLoading(true);
+ try { const r = await fetchEvents({ data: { donation_id: d.id } }); setEvents(r.events); }
+ catch { setEvents([]); }
+ finally { setLoading(false); }
+ }
+ };
+ const statusColor: Record<string, string> = {
+ approved:"#1f9d55", success:"#1f9d55", completed:"#1f9d55",
+ pending:"#c97200", rejected:"#c73838", failed:"#c73838",
+ };
+ return (
+ <>
+ <div className="nho-dash-trow" onClick={toggle} style={{cursor:"pointer"}}>
+ <span>{new Date(d.created_at).toLocaleDateString()}</span>
+ <span>{d.cause ?? "General"}</span>
+ <span style={{fontWeight:700,color:statusColor[d.status] ?? "#8a7050",textTransform:"capitalize"}}>
+ {d.status} <ChevronDown size={12} style={{transform:open?"rotate(180deg)":"none",transition:".2s"}}/>
+ </span>
+ <span className="muted" style={{fontFamily:"ui-monospace,monospace",fontSize:".8rem"}}>{d.external_reference ?? "—"}</span>
+ <span style={{textAlign:"right",fontWeight:700,color:"#c97200"}}>{d.currency} {Number(d.amount).toFixed(2)}</span>
+ </div>
+ {open && (
+ <div style={{padding:"4px 8px 16px",gridColumn:"1/-1"}}>
+ {loading ? <p className="muted">Loading timeline…</p> :
+ <DonationTimeline events={events ?? []} externalReference={d.external_reference} compact />}
+ </div>
+ )}
+ </>
+ );
+}
+
 function Stat({ icon, label, value, accent }: { icon: React.ReactNode; label: string; value: string; accent: string }) {
  return (
  <div className="nho-dash-stat">
