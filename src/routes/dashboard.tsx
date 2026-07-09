@@ -56,7 +56,7 @@ function Dashboard() {
  setLoading(true);
  const [{ data: p }, { data: d }] = await Promise.all([
  supabase.from("profiles").select("full_name, phone, avatar_url").eq("id", session.user.id).maybeSingle(),
- supabase.from("donations").select("id, amount, currency, cause, created_at, message").eq("user_id", session.user.id).order("created_at", { ascending: false }),
+ supabase.from("donations").select("id, amount, currency, cause, created_at, message, status, external_reference, provider_message").eq("user_id", session.user.id).order("created_at", { ascending: false }),
  ]);
  // ensure profile exists
  if (!p) {
