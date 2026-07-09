@@ -300,7 +300,7 @@ const DASH_CSS = `
 .nho-dash-recent strong{display:block;color:#1a1208}
 .nho-dash-recent small{color:#8a7050;font-size:.8rem}
 .nho-dash-table{display:flex;flex-direction:column}
-.nho-dash-thead,.nho-dash-trow{display:grid;grid-template-columns:1fr 1fr 1.4fr.8fr;gap:14px;padding:12px 8px;align-items:center}
+.nho-dash-thead,.nho-dash-trow{display:grid;grid-template-columns:.9fr 1fr .9fr 1.2fr .8fr;gap:14px;padding:12px 8px;align-items:center}
 .nho-dash-thead{border-bottom:1px solid #ede7da;font-size:.72rem;text-transform:uppercase;letter-spacing:.6px;color:#8a7050;font-weight:700}
 .nho-dash-trow{border-bottom:1px solid #f5efe2;font-size:.92rem}
 @media (max-width:640px){.nho-dash-thead{display:none}.nho-dash-trow{grid-template-columns:1fr 1fr;row-gap:4px}}
