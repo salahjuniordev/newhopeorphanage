@@ -150,6 +150,7 @@ function DonationPage() {
           donor_email: email.trim(),
           cause: CAUSES.find((c) => c.id === cause)?.label ?? "General",
           message: message.trim() || null,
+          idempotency_key: idempotencyKeyRef.current,
         },
       });
       if (!res.ok) {
@@ -157,11 +158,18 @@ function DonationPage() {
         setLoading(false);
         return;
       }
+      // Fetch the initial timeline right after creation.
+      let initialEvents: DonationTimelineEvent[] = [];
+      try {
+        const s = await check({ data: { external_reference: res.external_reference } });
+        initialEvents = s.events ?? [];
+      } catch { /* ignore */ }
       setTx({
         external_reference: res.external_reference,
         provider_link: res.provider_link,
         status: res.status || "pending",
         message: res.message ?? "Check your phone to approve the payment.",
+        events: initialEvents,
       });
       if (res.provider_link) {
         window.open(res.provider_link, "_blank", "noopener,noreferrer");
