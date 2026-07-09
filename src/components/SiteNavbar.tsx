@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback, type KeyboardEvent } from "react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { useI18n, type Lang } from "@/lib/i18n";
+import nhoLogo from "@/assets/nho-logo.png.asset.json";
 
 // Sections on the home page that legacy markup uses as anchor ids.
 const SERVICES: { key: "servicesEducation" | "servicesNutrition" | "servicesHealthcare" | "servicesFood"; hash: string }[] = [
