@@ -25,6 +25,7 @@ export const Route = createFileRoute("/api/public/webhooks/sebpay")({
           status?: string;
           amount?: number;
           currency?: string;
+          message?: string;
         };
         try {
           payload = JSON.parse(raw);
@@ -39,22 +40,57 @@ export const Route = createFileRoute("/api/public/webhooks/sebpay")({
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const status = String(payload.status ?? "pending").toLowerCase();
 
-        const query = supabaseAdmin
+        // Look up the donation first so we can (a) short-circuit duplicate
+        // webhook deliveries and (b) log a timeline event.
+        const lookup = supabaseAdmin.from("donations").select("id, status");
+        const { data: donation } = payload.external_reference
+          ? await lookup.eq("external_reference", payload.external_reference).maybeSingle()
+          : await lookup.eq("provider_transaction_id", payload.transaction_id!).maybeSingle();
+
+        if (!donation) {
+          return new Response("Unknown donation", { status: 404 });
+        }
+
+        // Idempotent webhook: if status is unchanged, acknowledge without
+        // touching the row or appending a duplicate event.
+        if (donation.status === status) {
+          return new Response("ok (duplicate)", { status: 200 });
+        }
+
+        // Never regress a completed donation back to pending on a late retry.
+        const terminal = ["approved", "success", "completed", "rejected", "failed"];
+        if (terminal.includes(donation.status) && !terminal.includes(status)) {
+          return new Response("ok (terminal, ignored)", { status: 200 });
+        }
+
+        const { error } = await supabaseAdmin
           .from("donations")
           .update({
             status,
             provider_transaction_id: payload.transaction_id ?? undefined,
+            provider_message: payload.message ?? undefined,
             updated_at: new Date().toISOString(),
-          });
-
-        const { error } = payload.external_reference
-          ? await query.eq("external_reference", payload.external_reference)
-          : await query.eq("provider_transaction_id", payload.transaction_id!);
+          })
+          .eq("id", donation.id);
 
         if (error) {
           console.error("[sebpay webhook] update failed", error);
           return new Response("DB error", { status: 500 });
         }
+
+        const evt =
+          status === "approved" || status === "success" || status === "completed"
+            ? "completed"
+            : status === "rejected" || status === "failed"
+            ? "failed"
+            : `status_${status}`;
+
+        await supabaseAdmin.from("donation_events").insert({
+          donation_id: donation.id,
+          event: evt,
+          message: payload.message ?? `Webhook: ${status}`,
+          provider_status: status,
+        });
 
         return new Response("ok", { status: 200 });
       },

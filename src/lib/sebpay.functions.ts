@@ -26,14 +26,15 @@ const DEFAULT_PUBLIC_KEY = "pk_test_FSx10KtxDhAt4VGlepQ7awviBaEjQeiukfxAGwz7";
 type InitiateInput = {
   amount: number;
   currency: "XOF" | "XAF" | "EUR" | "USD";
-  phone: string; // international, no '+'
-  operator: string; // slug: mtn, moov, orange, wave...
-  country: string; // ISO code: CM, BJ, CI...
+  phone: string;
+  operator: string;
+  country: string;
   donor_name: string;
   donor_email: string;
   cause?: string | null;
   message?: string | null;
   otp_code?: string | null;
+  idempotency_key?: string | null;
 };
 
 function getKeys() {
@@ -52,6 +53,31 @@ function getCallbackUrl() {
   return `${origin.replace(/\/$/, "")}/api/public/webhooks/sebpay`;
 }
 
+type AdminClient = Awaited<ReturnType<typeof getAdmin>>;
+async function getAdmin() {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  return supabaseAdmin;
+}
+
+async function logEvent(
+  admin: AdminClient,
+  donation_id: string,
+  event: string,
+  message?: string | null,
+  provider_status?: string | null,
+) {
+  try {
+    await admin.from("donation_events").insert({
+      donation_id,
+      event,
+      message: message ?? null,
+      provider_status: provider_status ?? null,
+    });
+  } catch (err) {
+    console.error("[sebpay] failed to log event", event, err);
+  }
+}
+
 export const initiateSebpayDonation = createServerFn({ method: "POST" })
   .inputValidator((data: InitiateInput) => {
     if (!data || typeof data !== "object") throw new Error("Invalid payload");
@@ -65,16 +91,39 @@ export const initiateSebpayDonation = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { publicKey, secretKey } = getKeys();
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const admin = await getAdmin();
     const userId = await getOptionalUserId();
 
-    // Create donation row first (status pending) — id becomes external_reference
+    // ---------- Idempotency ----------
+    // If the caller sent the same idempotency_key we already processed, return
+    // that donation instead of creating a new one — prevents duplicate rows
+    // AND duplicate charges from double-clicks or client-side retries.
+    if (data.idempotency_key) {
+      const { data: existing } = await admin
+        .from("donations")
+        .select("id, external_reference, status, provider_link, provider_message, provider_transaction_id")
+        .eq("idempotency_key", data.idempotency_key)
+        .maybeSingle();
+      if (existing) {
+        return {
+          ok: true as const,
+          donation_id: existing.id,
+          external_reference: existing.external_reference!,
+          provider_transaction_id: existing.provider_transaction_id ?? null,
+          provider_link: existing.provider_link ?? null,
+          status: existing.status,
+          message: existing.provider_message ?? "Already in progress.",
+          idempotent_replay: true as const,
+        };
+      }
+    }
+
     const external_reference = `NHO-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
     const phone = data.phone.replace(/[^\d]/g, "");
     const operator = data.operator.trim().toLowerCase();
     const country = data.country.trim().toUpperCase();
 
-    const { data: inserted, error: insErr } = await supabaseAdmin
+    const { data: inserted, error: insErr } = await admin
       .from("donations")
       .insert({
         donor_name: data.donor_name.trim(),
@@ -90,15 +139,38 @@ export const initiateSebpayDonation = createServerFn({ method: "POST" })
         external_reference,
         status: "pending",
         user_id: userId,
+        idempotency_key: data.idempotency_key ?? null,
       })
       .select("id, external_reference")
       .single();
 
+    // Race: another concurrent request just inserted the same idempotency_key.
+    // Fetch the winning row and return it.
+    if (insErr && data.idempotency_key) {
+      const { data: winner } = await admin
+        .from("donations")
+        .select("id, external_reference, status, provider_link, provider_message, provider_transaction_id")
+        .eq("idempotency_key", data.idempotency_key)
+        .maybeSingle();
+      if (winner) {
+        return {
+          ok: true as const,
+          donation_id: winner.id,
+          external_reference: winner.external_reference!,
+          provider_transaction_id: winner.provider_transaction_id ?? null,
+          provider_link: winner.provider_link ?? null,
+          status: winner.status,
+          message: winner.provider_message ?? "Already in progress.",
+          idempotent_replay: true as const,
+        };
+      }
+    }
     if (insErr || !inserted) {
       throw new Error(insErr?.message ?? "Failed to record donation");
     }
 
-    // Call SebPay collections API
+    await logEvent(admin, inserted.id, "created", `Donation of ${data.currency} ${data.amount} recorded.`, "pending");
+
     const body: Record<string, unknown> = {
       amount: data.amount,
       currency: data.currency,
@@ -123,51 +195,33 @@ export const initiateSebpayDonation = createServerFn({ method: "POST" })
         body: JSON.stringify(body),
       });
     } catch (err) {
-      await supabaseAdmin
+      const msg = `Network error: ${(err as Error).message}`;
+      await admin
         .from("donations")
-        .update({
-          status: "rejected",
-          provider_message: `Network error: ${(err as Error).message}`,
-          updated_at: new Date().toISOString(),
-        })
+        .update({ status: "rejected", provider_message: msg, updated_at: new Date().toISOString() })
         .eq("id", inserted.id);
+      await logEvent(admin, inserted.id, "failed", msg, "rejected");
       throw new Error("Payment service unreachable. Please try again.");
     }
 
     const text = await providerRes.text();
     let parsed: {
       success?: boolean;
-      data?: {
-        transaction_id?: string;
-        status?: string;
-        provider_link?: string;
-        message?: string;
-      };
+      data?: { transaction_id?: string; status?: string; provider_link?: string; message?: string };
       message?: string;
     } = {};
-    try {
-      parsed = text ? JSON.parse(text) : {};
-    } catch {
-      parsed = { message: text.slice(0, 300) };
-    }
+    try { parsed = text ? JSON.parse(text) : {}; }
+    catch { parsed = { message: text.slice(0, 300) }; }
 
     if (!providerRes.ok || parsed.success === false) {
       const baseMsg = parsed.message ?? parsed.data?.message ?? `SebPay error ${providerRes.status}`;
-      const detail = text && text.length < 500 ? ` | raw: ${text}` : "";
-      const msg = `${baseMsg} [HTTP ${providerRes.status}]${detail}`;
-      console.error("[sebpay] initiate failed", {
-        status: providerRes.status,
-        body: text.slice(0, 800),
-        request: body,
-      });
-      await supabaseAdmin
+      const msg = `${baseMsg} [HTTP ${providerRes.status}]`;
+      console.error("[sebpay] initiate failed", { status: providerRes.status, body: text.slice(0, 800), request: body });
+      await admin
         .from("donations")
-        .update({
-          status: "rejected",
-          provider_message: msg,
-          updated_at: new Date().toISOString(),
-        })
+        .update({ status: "rejected", provider_message: msg, updated_at: new Date().toISOString() })
         .eq("id", inserted.id);
+      await logEvent(admin, inserted.id, "failed", msg, "rejected");
       return {
         ok: false as const,
         error: msg,
@@ -177,16 +231,30 @@ export const initiateSebpayDonation = createServerFn({ method: "POST" })
     }
 
     const providerData = parsed.data ?? {};
-    await supabaseAdmin
+    const newStatus = (providerData.status ?? "pending").toLowerCase();
+    await admin
       .from("donations")
       .update({
         provider_transaction_id: providerData.transaction_id ?? null,
         provider_link: providerData.provider_link ?? null,
         provider_message: providerData.message ?? parsed.message ?? null,
-        status: (providerData.status ?? "pending").toLowerCase(),
+        status: newStatus,
         updated_at: new Date().toISOString(),
       })
       .eq("id", inserted.id);
+
+    await logEvent(
+      admin,
+      inserted.id,
+      "provider_accepted",
+      `SebPay accepted collection${providerData.transaction_id ? ` (tx ${providerData.transaction_id})` : ""}.`,
+      newStatus,
+    );
+    if (newStatus === "pending") {
+      await logEvent(admin, inserted.id, "awaiting_confirmation", "Awaiting phone confirmation from donor.", newStatus);
+    } else if (newStatus === "approved" || newStatus === "success") {
+      await logEvent(admin, inserted.id, "completed", providerData.message ?? "Payment completed.", newStatus);
+    }
 
     return {
       ok: true as const,
@@ -194,10 +262,28 @@ export const initiateSebpayDonation = createServerFn({ method: "POST" })
       external_reference,
       provider_transaction_id: providerData.transaction_id ?? null,
       provider_link: providerData.provider_link ?? null,
-      status: (providerData.status ?? "pending").toLowerCase(),
+      status: newStatus,
       message: providerData.message ?? parsed.message ?? null,
+      idempotent_replay: false as const,
     };
   });
+
+export type DonationEvent = {
+  id: string;
+  event: string;
+  message: string | null;
+  provider_status: string | null;
+  created_at: string;
+};
+
+async function fetchEvents(admin: AdminClient, donation_id: string): Promise<DonationEvent[]> {
+  const { data } = await admin
+    .from("donation_events")
+    .select("id, event, message, provider_status, created_at")
+    .eq("donation_id", donation_id)
+    .order("created_at", { ascending: true });
+  return (data as DonationEvent[] | null) ?? [];
+}
 
 export const checkSebpayStatus = createServerFn({ method: "POST" })
   .inputValidator((data: { external_reference: string }) => {
@@ -206,7 +292,7 @@ export const checkSebpayStatus = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { publicKey, secretKey } = getKeys();
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const admin = await getAdmin();
 
     let remoteStatus: string | null = null;
     let remoteMsg: string | null = null;
@@ -215,11 +301,7 @@ export const checkSebpayStatus = createServerFn({ method: "POST" })
         `${SEBPAY_BASE}/collections/${encodeURIComponent(data.external_reference)}`,
         {
           method: "GET",
-          headers: {
-            "X-Public-Key": publicKey,
-            "X-Secret-Key": secretKey,
-            Accept: "application/json",
-          },
+          headers: { "X-Public-Key": publicKey, "X-Secret-Key": secretKey, Accept: "application/json" },
         },
       );
       const text = await res.text();
@@ -229,30 +311,54 @@ export const checkSebpayStatus = createServerFn({ method: "POST" })
         remoteMsg = parsed.data.message ?? parsed.message ?? null;
       }
     } catch {
-      // fall back to DB status
+      /* ignore */
     }
 
-    if (remoteStatus) {
-      await supabaseAdmin
-        .from("donations")
-        .update({
-          status: remoteStatus,
-          provider_message: remoteMsg,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("external_reference", data.external_reference);
-    }
-
-    const { data: row } = await supabaseAdmin
+    const { data: existing } = await admin
       .from("donations")
-      .select("id, status, provider_message, provider_link, amount, currency, external_reference, created_at")
+      .select("id, status")
       .eq("external_reference", data.external_reference)
       .maybeSingle();
+
+    if (existing && remoteStatus && remoteStatus !== existing.status) {
+      await admin
+        .from("donations")
+        .update({ status: remoteStatus, provider_message: remoteMsg, updated_at: new Date().toISOString() })
+        .eq("id", existing.id);
+      const evt =
+        remoteStatus === "approved" || remoteStatus === "success"
+          ? "completed"
+          : remoteStatus === "rejected" || remoteStatus === "failed"
+          ? "failed"
+          : `status_${remoteStatus}`;
+      await logEvent(admin, existing.id, evt, remoteMsg, remoteStatus);
+    }
+
+    const { data: row } = await admin
+      .from("donations")
+      .select("id, status, provider_message, provider_link, amount, currency, external_reference, created_at, provider_transaction_id")
+      .eq("external_reference", data.external_reference)
+      .maybeSingle();
+
+    const events = row ? await fetchEvents(admin, row.id) : [];
 
     return {
       status: (row?.status ?? remoteStatus ?? "pending") as string,
       message: row?.provider_message ?? remoteMsg ?? null,
       provider_link: row?.provider_link ?? null,
       donation: row ?? null,
+      events,
     };
+  });
+
+// Fetch events for a donation the caller can already see (dashboards).
+export const getDonationEvents = createServerFn({ method: "POST" })
+  .inputValidator((data: { donation_id: string }) => {
+    if (!data?.donation_id) throw new Error("Missing donation_id");
+    return data;
+  })
+  .handler(async ({ data }) => {
+    const admin = await getAdmin();
+    const events = await fetchEvents(admin, data.donation_id);
+    return { events };
   });

@@ -17,7 +17,7 @@
   display:flex;align-items:center;gap:24px;
 }
 .nho-brand{display:inline-flex;align-items:center;flex-shrink:0}
-.nho-brand img{height:48px;width:auto;display:block}
+.nho-brand img{height:80px;width:auto;display:block}
 
 .nho-links{display:flex;align-items:center;gap:6px;flex:1;justify-content:center}
 .nho-link{
@@ -118,7 +118,7 @@ html{scroll-behavior:smooth;scroll-padding-top:84px}
 }
 @media (max-width: 560px){
   .nho-nav-inner{padding:10px 16px;gap:12px}
-  .nho-brand img{height:40px}
+  .nho-brand img{height:64px}
 }
 
 /* Hide legacy decorative floating stickers/badges site-wide */

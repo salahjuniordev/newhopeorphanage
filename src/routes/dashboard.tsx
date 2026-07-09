@@ -1,14 +1,21 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Heart, LogOut, User as UserIcon, Mail, Phone, Sparkles, Calendar } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { Heart, LogOut, User as UserIcon, Mail, Phone, Sparkles, Calendar, ChevronDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Session } from "@supabase/supabase-js";
+import { getDonationEvents, type DonationEvent } from "@/lib/sebpay.functions";
+import { DonationTimeline } from "@/components/DonationTimeline";
 
 export const Route = createFileRoute("/dashboard")({
  component: Dashboard,
 });
 
-interface Donation { id: string; amount: number; currency: string; cause: string | null; created_at: string; message: string | null }
+interface Donation {
+ id: string; amount: number; currency: string; cause: string | null;
+ created_at: string; message: string | null;
+ status: string; external_reference: string | null; provider_message: string | null;
+}
 interface Profile { full_name: string | null; phone: string | null; avatar_url: string | null }
 
 function Dashboard() {
@@ -49,7 +56,7 @@ function Dashboard() {
  setLoading(true);
  const [{ data: p }, { data: d }] = await Promise.all([
  supabase.from("profiles").select("full_name, phone, avatar_url").eq("id", session.user.id).maybeSingle(),
- supabase.from("donations").select("id, amount, currency, cause, created_at, message").eq("user_id", session.user.id).order("created_at", { ascending: false }),
+ supabase.from("donations").select("id, amount, currency, cause, created_at, message, status, external_reference, provider_message").eq("user_id", session.user.id).order("created_at", { ascending: false }),
  ]);
  // ensure profile exists
  if (!p) {
@@ -176,15 +183,10 @@ function Dashboard() {
  ): (
  <div className="nho-dash-table">
  <div className="nho-dash-thead">
- <span>Date</span><span>Cause</span><span>Message</span><span style={{textAlign:"right"}}>Amount</span>
+ <span>Date</span><span>Cause</span><span>Status</span><span>Reference</span><span style={{textAlign:"right"}}>Amount</span>
  </div>
  {donations.map((d) => (
- <div key={d.id} className="nho-dash-trow">
- <span>{new Date(d.created_at).toLocaleDateString()}</span>
- <span>{d.cause?? "General"}</span>
- <span className="muted">{d.message?? "—"}</span>
- <span style={{textAlign:"right",fontWeight:700,color:"#c97200"}}>{d.currency} {Number(d.amount).toFixed(2)}</span>
- </div>
+ <DonationRow key={d.id} d={d} />
  ))}
  </div>
  )}
@@ -209,6 +211,45 @@ function Dashboard() {
  )}
  </section>
  </div>
+ );
+}
+
+function DonationRow({ d }: { d: Donation }) {
+ const [open, setOpen] = useState(false);
+ const [events, setEvents] = useState<DonationEvent[] | null>(null);
+ const [loading, setLoading] = useState(false);
+ const fetchEvents = useServerFn(getDonationEvents);
+ const toggle = async () => {
+ const next = !open; setOpen(next);
+ if (next && !events) {
+ setLoading(true);
+ try { const r = await fetchEvents({ data: { donation_id: d.id } }); setEvents(r.events); }
+ catch { setEvents([]); }
+ finally { setLoading(false); }
+ }
+ };
+ const statusColor: Record<string, string> = {
+ approved:"#1f9d55", success:"#1f9d55", completed:"#1f9d55",
+ pending:"#c97200", rejected:"#c73838", failed:"#c73838",
+ };
+ return (
+ <>
+ <div className="nho-dash-trow" onClick={toggle} style={{cursor:"pointer"}}>
+ <span>{new Date(d.created_at).toLocaleDateString()}</span>
+ <span>{d.cause ?? "General"}</span>
+ <span style={{fontWeight:700,color:statusColor[d.status] ?? "#8a7050",textTransform:"capitalize"}}>
+ {d.status} <ChevronDown size={12} style={{transform:open?"rotate(180deg)":"none",transition:".2s"}}/>
+ </span>
+ <span className="muted" style={{fontFamily:"ui-monospace,monospace",fontSize:".8rem"}}>{d.external_reference ?? "—"}</span>
+ <span style={{textAlign:"right",fontWeight:700,color:"#c97200"}}>{d.currency} {Number(d.amount).toFixed(2)}</span>
+ </div>
+ {open && (
+ <div style={{padding:"4px 8px 16px",gridColumn:"1/-1"}}>
+ {loading ? <p className="muted">Loading timeline…</p> :
+ <DonationTimeline events={events ?? []} externalReference={d.external_reference} compact />}
+ </div>
+ )}
+ </>
  );
 }
 
@@ -259,7 +300,7 @@ const DASH_CSS = `
 .nho-dash-recent strong{display:block;color:#1a1208}
 .nho-dash-recent small{color:#8a7050;font-size:.8rem}
 .nho-dash-table{display:flex;flex-direction:column}
-.nho-dash-thead,.nho-dash-trow{display:grid;grid-template-columns:1fr 1fr 1.4fr.8fr;gap:14px;padding:12px 8px;align-items:center}
+.nho-dash-thead,.nho-dash-trow{display:grid;grid-template-columns:.9fr 1fr .9fr 1.2fr .8fr;gap:14px;padding:12px 8px;align-items:center}
 .nho-dash-thead{border-bottom:1px solid #ede7da;font-size:.72rem;text-transform:uppercase;letter-spacing:.6px;color:#8a7050;font-weight:700}
 .nho-dash-trow{border-bottom:1px solid #f5efe2;font-size:.92rem}
 @media (max-width:640px){.nho-dash-thead{display:none}.nho-dash-trow{grid-template-columns:1fr 1fr;row-gap:4px}}

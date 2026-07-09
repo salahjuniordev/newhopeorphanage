@@ -15,6 +15,8 @@ import {
  claimFirstAdmin, listAllUsers, inviteAdmin, grantRole, revokeRole,
  revokeInvitation, deleteContactMessage,
 } from "@/lib/admin.functions";
+import { getDonationEvents, type DonationEvent } from "@/lib/sebpay.functions";
+import { DonationTimeline } from "@/components/DonationTimeline";
 import "@/components/admin.css";
 
 export const Route = createFileRoute("/admin")({
@@ -27,6 +29,7 @@ interface DonationRow {
  id: string; amount: number; currency: string; cause: string | null;
  donor_name: string; donor_email: string; message: string | null;
  created_at: string; user_id: string | null;
+ status: string; external_reference: string | null; provider_transaction_id: string | null;
 }
 interface MessageRow {
  id: string; name: string; email: string; phone: string | null;
@@ -435,16 +438,21 @@ function OverviewTab({ stats, recent, range, setRange, setPreset }: {
 
 function DonationsTab({ rows }: { rows: DonationRow[] }) {
  const [q, setQ] = useState("");
+ const [openId, setOpenId] = useState<string | null>(null);
  const filtered = rows.filter((r) =>
-!q || [r.donor_name, r.donor_email, r.cause, r.message].join(" ").toLowerCase().includes(q.toLowerCase())
+!q || [r.donor_name, r.donor_email, r.cause, r.message, r.external_reference, r.status].join(" ").toLowerCase().includes(q.toLowerCase())
  );
  const csv = () => {
- const header = "Date,Donor,Email,Amount,Currency,Cause,Message";
+ const header = "Date,Donor,Email,Amount,Currency,Cause,Status,Reference,Message";
  const body = filtered.map((r) => [
  new Date(r.created_at).toISOString(), esc(r.donor_name), esc(r.donor_email),
- r.amount, r.currency, esc(r.cause?? ""), esc(r.message?? ""),
+ r.amount, r.currency, esc(r.cause?? ""), esc(r.status), esc(r.external_reference?? ""), esc(r.message?? ""),
  ].join(",")).join("\n");
  downloadCsv("donations.csv", `${header}\n${body}`);
+ };
+ const statusColor: Record<string, string> = {
+ approved:"#1f9d55", success:"#1f9d55", completed:"#1f9d55",
+ pending:"#c97200", rejected:"#c73838", failed:"#c73838",
  };
  return (
  <div className="adm-content">
@@ -455,25 +463,50 @@ function DonationsTab({ rows }: { rows: DonationRow[] }) {
  </div>
  <div className="adm-table-wrap">
  <table className="adm-table">
- <thead><tr><th>Date</th><th>Donor</th><th>Email</th><th>Amount</th><th>Cause</th><th>Message</th></tr></thead>
+ <thead><tr><th>Date</th><th>Donor</th><th>Amount</th><th>Status</th><th>Reference</th><th>Cause</th><th></th></tr></thead>
  <tbody>
  {filtered.map((r) => (
- <tr key={r.id}>
+ <Fragment key={r.id}>
+ <tr>
  <td>{new Date(r.created_at).toLocaleString()}</td>
- <td>{r.donor_name}</td>
- <td>{r.donor_email}</td>
+ <td>
+ <div className="adm-list-primary">{r.donor_name}</div>
+ <div className="adm-list-secondary">{r.donor_email}</div>
+ </td>
  <td className="adm-t-amount">{r.currency} {Number(r.amount).toLocaleString()}</td>
+ <td style={{fontWeight:700,color:statusColor[r.status] ?? "#8a7050",textTransform:"capitalize"}}>{r.status}</td>
+ <td style={{fontFamily:"ui-monospace,monospace",fontSize:".8rem"}}>{r.external_reference ?? "—"}</td>
  <td>{r.cause || "—"}</td>
- <td className="adm-t-msg">{r.message || "—"}</td>
+ <td className="adm-t-actions">
+ <button className="adm-btn adm-btn-ghost" onClick={() => setOpenId(openId === r.id ? null : r.id)}>
+ {openId === r.id ? "Hide" : "Timeline"}
+ </button>
+ </td>
  </tr>
+ {openId === r.id && (
+ <tr><td colSpan={7} style={{background:"#fffaf0"}}>
+ <AdminTimeline donationId={r.id} externalReference={r.external_reference} />
+ </td></tr>
+ )}
+ </Fragment>
  ))}
- {filtered.length === 0 && <tr><td colSpan={6} className="adm-empty">No matching donations.</td></tr>}
+ {filtered.length === 0 && <tr><td colSpan={7} className="adm-empty">No matching donations.</td></tr>}
  </tbody>
  </table>
  </div>
  </div>
  </div>
  );
+}
+
+function AdminTimeline({ donationId, externalReference }: { donationId: string; externalReference: string | null }) {
+ const [events, setEvents] = useState<DonationEvent[] | null>(null);
+ const fetchEvents = useServerFn(getDonationEvents);
+ useEffect(() => {
+ fetchEvents({ data: { donation_id: donationId } }).then((r) => setEvents(r.events)).catch(() => setEvents([]));
+ }, [donationId, fetchEvents]);
+ if (!events) return <p style={{padding:12,color:"#8a7050"}}>Loading timeline…</p>;
+ return <div style={{padding:12}}><DonationTimeline events={events} externalReference={externalReference} compact /></div>;
 }
 
 function MessagesTab({ rows, onDelete }: { rows: MessageRow[]; onDelete: (id: string) => Promise<void> }) {
