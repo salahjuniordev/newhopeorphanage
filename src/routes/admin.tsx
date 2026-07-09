@@ -15,6 +15,8 @@ import {
  claimFirstAdmin, listAllUsers, inviteAdmin, grantRole, revokeRole,
  revokeInvitation, deleteContactMessage,
 } from "@/lib/admin.functions";
+import { getDonationEvents, type DonationEvent } from "@/lib/sebpay.functions";
+import { DonationTimeline } from "@/components/DonationTimeline";
 import "@/components/admin.css";
 
 export const Route = createFileRoute("/admin")({
