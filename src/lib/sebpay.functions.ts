@@ -82,6 +82,15 @@ export const initiateSebpayDonation = createServerFn({ method: "POST" })
   .inputValidator((data: InitiateInput) => {
     if (!data || typeof data !== "object") throw new Error("Invalid payload");
     if (!(data.amount > 0)) throw new Error("Invalid amount");
+    if (data.currency === "XAF" || data.currency === "XOF") {
+      // Provider rule: whole multiples of 200 only (its 2.5% fee must be a
+      // whole unit), minimum 400.
+      if (data.amount < 400 || data.amount % 200 !== 0) {
+        throw new Error(
+          `Mobile Money amounts must be a whole multiple of 200 ${data.currency} (minimum 400).`,
+        );
+      }
+    }
     if (!data.phone?.trim()) throw new Error("Phone required");
     if (!data.operator?.trim()) throw new Error("Operator required");
     if (!data.country?.trim()) throw new Error("Country required");
@@ -214,7 +223,17 @@ export const initiateSebpayDonation = createServerFn({ method: "POST" })
     catch { parsed = { message: text.slice(0, 300) }; }
 
     if (!providerRes.ok || parsed.success === false) {
-      const baseMsg = parsed.message ?? parsed.data?.message ?? `SebPay error ${providerRes.status}`;
+      const raw = text ?? "";
+      let baseMsg = parsed.message ?? parsed.data?.message ?? `SebPay error ${providerRes.status}`;
+      // Surface the real provider reason instead of the generic wrapper text.
+      if (raw.includes("amount_decimal_not_allowed")) {
+        baseMsg = `This amount is not supported by Mobile Money. Please use a whole multiple of 200 ${data.currency} (e.g. ${Math.max(400, Math.round(data.amount / 200) * 200)}).`;
+      } else if (raw.includes("amount_below_min")) {
+        baseMsg = `This amount is below the Mobile Money minimum. Please donate at least 400 ${data.currency}.`;
+      } else {
+        const nested = raw.match(/"message\\?":\\?"([^"\\]{3,200})/);
+        if (nested?.[1] && parsed.message) baseMsg = `${parsed.message} ${nested[1]}`;
+      }
       const msg = `${baseMsg} [HTTP ${providerRes.status}]`;
       console.error("[sebpay] initiate failed", { status: providerRes.status, body: text.slice(0, 800), request: body });
       await admin

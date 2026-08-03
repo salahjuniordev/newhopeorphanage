@@ -46,7 +46,12 @@ const OPERATOR_LABEL: Record<string, string> = {
   yas: "Yas / Togocom",
 };
 
-const AMOUNTS_XAF = [1000, 2500, 5000, 10000, 25000, 50000];
+const AMOUNTS_XAF = [1000, 2000, 5000, 10000, 25000, 50000];
+// Mobile Money provider rule: the amount must be a whole multiple of 200
+// (its 2.5% fee must land on a whole unit) and at least 400.
+const AMOUNT_STEP = 200;
+const MIN_AMOUNT = 400;
+const normalizeAmount = (v: number) => Math.max(MIN_AMOUNT, Math.round(v / AMOUNT_STEP) * AMOUNT_STEP);
 
 function DonationPage() {
   const initiate = useServerFn(initiateSebpayDonation);
@@ -55,7 +60,7 @@ function DonationPage() {
   const [countryCode, setCountryCode] = useState<(typeof COUNTRIES)[number]["code"]>("CM");
   const country = COUNTRIES.find((c) => c.code === countryCode)!;
   const [operator, setOperator] = useState<string>(country.operators[0]);
-  const [amount, setAmount] = useState<number>(2500);
+  const [amount, setAmount] = useState<number>(2000);
   const [custom, setCustom] = useState("");
   const [cause, setCause] = useState<string>("general");
   const [name, setName] = useState("");
@@ -132,6 +137,11 @@ function DonationPage() {
     e.preventDefault();
     setError(null);
     if (!finalAmount || finalAmount <= 0) { setError("Please enter a valid amount."); return; }
+    if (finalAmount < MIN_AMOUNT || finalAmount % AMOUNT_STEP !== 0) {
+      const suggested = normalizeAmount(finalAmount);
+      setError(`Mobile Money amounts must be a multiple of ${AMOUNT_STEP} ${country.currency} (minimum ${MIN_AMOUNT}). Try ${suggested.toLocaleString()}.`);
+      return;
+    }
     if (!name.trim() || !email.trim()) { setError("Please enter your name and email."); return; }
 
     const cleanedPhone = phone.replace(/[^\d]/g, "");
@@ -327,9 +337,13 @@ button{padding:10px 24px;background:#f19100;color:#fff;border:0;border-radius:8p
                 inputMode="decimal"
                 placeholder="Enter amount"
                 value={custom}
-                onChange={(e) => setCustom(e.target.value.replace(/[^\d.]/g, ""))}
+                onChange={(e) => setCustom(e.target.value.replace(/[^\d]/g, ""))}
+                onBlur={() => { if (custom) setCustom(String(normalizeAmount(Number(custom)))); }}
               />
             </div>
+            <small style={{display:"block",marginTop:6,color:"#8a7b63",fontWeight:500}}>
+              Multiples of {AMOUNT_STEP} {country.currency}, minimum {MIN_AMOUNT}.
+            </small>
           </label>
 
           <h2>3. Pick a cause</h2>
