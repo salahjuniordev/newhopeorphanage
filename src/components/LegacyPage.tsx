@@ -59,6 +59,11 @@ export function LegacyPage({ html, title }: LegacyPageProps) {
   const { styles, body } = extractLegacy(html);
   const ref = useRef<HTMLDivElement>(null);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (title) document.title = title;
