@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { extractLegacy } from "@/lib/legacy-html";
 import { supabase } from "@/integrations/supabase/client";
@@ -59,6 +59,11 @@ export function LegacyPage({ html, title }: LegacyPageProps) {
   const { styles, body } = extractLegacy(html);
   const ref = useRef<HTMLDivElement>(null);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (title) document.title = title;
@@ -282,10 +287,22 @@ export function LegacyPage({ html, title }: LegacyPageProps) {
     };
   }, [body, pathname]);
 
+  // Render a blank shell during SSR / initial hydration to avoid mismatches
+  // between the server-parsed HTML and the client DOM. The legacy plugins and
+  // form wiring run after mount in the effect above.
+  if (!mounted) {
+    return (
+      <>
+        <style dangerouslySetInnerHTML={{ __html: PLACEHOLDER_STYLE + (styles || "") }} />
+        <div className="min-h-screen bg-background" />
+      </>
+    );
+  }
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: PLACEHOLDER_STYLE + (styles || "") }} />
-      <div ref={ref} suppressHydrationWarning dangerouslySetInnerHTML={{ __html: body }} />
+      <div ref={ref} dangerouslySetInnerHTML={{ __html: body }} />
     </>
   );
 }
