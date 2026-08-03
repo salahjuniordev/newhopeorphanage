@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { extractLegacy } from "@/lib/legacy-html";
 import { supabase } from "@/integrations/supabase/client";
