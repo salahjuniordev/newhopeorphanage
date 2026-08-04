@@ -87,6 +87,12 @@ function DonationPage() {
       : `nho-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
   );
 
+  const resetTransaction = () => {
+    idempotencyKeyRef.current = crypto.randomUUID();
+    setTx(null);
+    setError(null);
+  };
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       const s = data.session;
@@ -264,7 +270,7 @@ button{padding:10px 24px;background:#f19100;color:#fff;border:0;border-radius:8p
               <button type="button" onClick={downloadReceipt} className="nho-donate-btn-primary">Download receipt (PDF)</button>
             )}
             {isRejected && (
-              <button type="button" onClick={() => setTx(null)} className="nho-donate-btn-primary">Try again</button>
+              <button type="button" onClick={resetTransaction} className="nho-donate-btn-primary">Try again</button>
             )}
             {tx.provider_link && !isApproved && !isRejected && (
               <a href={tx.provider_link} target="_blank" rel="noopener noreferrer" className="nho-donate-btn-primary">Open payment page</a>

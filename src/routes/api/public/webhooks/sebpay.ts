@@ -6,11 +6,15 @@ export const Route = createFileRoute("/api/public/webhooks/sebpay")({
     handlers: {
       POST: async ({ request }) => {
         const raw = await request.text();
-        const secret =
-          process.env.SEBPAY_SECRET_KEY ?? process.env.STRIPE_TEST_API_KEY ?? "";
+        const secret = process.env.SEBPAY_SECRET_KEY ?? "";
+
+        if (!secret || !secret.startsWith("sk_live_")) {
+          console.error("[sebpay webhook] live secret is unavailable");
+          return new Response("Payment webhook unavailable", { status: 503 });
+        }
 
         const signature = request.headers.get("x-sebpay-signature") ?? "";
-        if (secret && signature) {
+        if (signature) {
           const expected = createHmac("sha256", secret).update(raw).digest("hex");
           const a = Buffer.from(signature, "utf8");
           const b = Buffer.from(expected, "utf8");
