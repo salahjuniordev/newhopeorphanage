@@ -1,6 +1,13 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequestHeader } from "@tanstack/react-start/server";
-import { createClient } from "@supabase/supabase-js";
+import {
+  type AdminClient,
+  SEBPAY_BASE,
+  getAdmin,
+  getOptionalUserId,
+  getSebpayCallbackUrl,
+  getSebpayKeys,
+  logDonationEvent,
+} from "./sebpay.server";
 
 type InitiateInput = {
   amount: number;
@@ -15,8 +22,6 @@ type InitiateInput = {
   otp_code?: string | null;
   idempotency_key?: string | null;
 };
-
-const SEBPAY_BASE = "https://newapi.sebpay.bj/api/v1";
 
 export const initiateSebpayDonation = createServerFn({ method: "POST" })
   .inputValidator((data: InitiateInput) => {
@@ -39,7 +44,7 @@ export const initiateSebpayDonation = createServerFn({ method: "POST" })
     return data;
   })
   .handler(async ({ data }) => {
-    const { publicKey, secretKey } = getKeys();
+    const { publicKey, secretKey } = getSebpayKeys();
     const admin = await getAdmin();
     const userId = await getOptionalUserId();
 
@@ -118,7 +123,7 @@ export const initiateSebpayDonation = createServerFn({ method: "POST" })
       throw new Error(insErr?.message ?? "Failed to record donation");
     }
 
-    await logEvent(admin, inserted.id, "created", `Donation of ${data.currency} ${data.amount} recorded.`, "pending");
+    await logDonationEvent(admin, inserted.id, "created", `Donation of ${data.currency} ${data.amount} recorded.`, "pending");
 
     const body: Record<string, unknown> = {
       amount: data.amount,
@@ -127,7 +132,7 @@ export const initiateSebpayDonation = createServerFn({ method: "POST" })
       operator,
       country,
       external_reference,
-      callback_url: getCallbackUrl(),
+      callback_url: getSebpayCallbackUrl(),
     };
     if (data.otp_code) body.otp_code = data.otp_code;
 
@@ -149,7 +154,7 @@ export const initiateSebpayDonation = createServerFn({ method: "POST" })
         .from("donations")
         .update({ status: "rejected", provider_message: msg, updated_at: new Date().toISOString() })
         .eq("id", inserted.id);
-      await logEvent(admin, inserted.id, "failed", msg, "rejected");
+      await logDonationEvent(admin, inserted.id, "failed", msg, "rejected");
       throw new Error("Payment service unreachable. Please try again.");
     }
 
@@ -180,7 +185,7 @@ export const initiateSebpayDonation = createServerFn({ method: "POST" })
         .from("donations")
         .update({ status: "rejected", provider_message: msg, updated_at: new Date().toISOString() })
         .eq("id", inserted.id);
-      await logEvent(admin, inserted.id, "failed", msg, "rejected");
+      await logDonationEvent(admin, inserted.id, "failed", msg, "rejected");
       return {
         ok: false as const,
         error: msg,
@@ -202,7 +207,7 @@ export const initiateSebpayDonation = createServerFn({ method: "POST" })
       })
       .eq("id", inserted.id);
 
-    await logEvent(
+    await logDonationEvent(
       admin,
       inserted.id,
       "provider_accepted",
@@ -210,9 +215,9 @@ export const initiateSebpayDonation = createServerFn({ method: "POST" })
       newStatus,
     );
     if (newStatus === "pending") {
-      await logEvent(admin, inserted.id, "awaiting_confirmation", "Awaiting phone confirmation from donor.", newStatus);
+      await logDonationEvent(admin, inserted.id, "awaiting_confirmation", "Awaiting phone confirmation from donor.", newStatus);
     } else if (newStatus === "approved" || newStatus === "success") {
-      await logEvent(admin, inserted.id, "completed", providerData.message ?? "Payment completed.", newStatus);
+      await logDonationEvent(admin, inserted.id, "completed", providerData.message ?? "Payment completed.", newStatus);
     }
 
     return {
@@ -250,7 +255,7 @@ export const checkSebpayStatus = createServerFn({ method: "POST" })
     return data;
   })
   .handler(async ({ data }) => {
-    const { publicKey, secretKey } = getKeys();
+    const { publicKey, secretKey } = getSebpayKeys();
     const admin = await getAdmin();
 
     let remoteStatus: string | null = null;
@@ -290,7 +295,7 @@ export const checkSebpayStatus = createServerFn({ method: "POST" })
           : remoteStatus === "rejected" || remoteStatus === "failed"
           ? "failed"
           : `status_${remoteStatus}`;
-      await logEvent(admin, existing.id, evt, remoteMsg, remoteStatus);
+      await logDonationEvent(admin, existing.id, evt, remoteMsg, remoteStatus);
     }
 
     const { data: row } = await admin
