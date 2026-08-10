@@ -1,5 +1,7 @@
 // Extracts <body> inner HTML + any <head><style> blocks from a legacy HTML
 // page string and rewrites asset / nav paths so it works inside the SPA.
+import webpManifest from "./webp-manifest.json";
+
 
 const PAGE_MAP: Record<string, string> = {
   "index.html": "/",
