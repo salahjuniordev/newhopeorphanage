@@ -92,8 +92,22 @@ export function LegacyPage({ html, title }: LegacyPageProps) {
       if (!t) return;
       if (t.tagName === "IMG") {
         const img = t as HTMLImageElement;
+        // WebP twin missing/unsupported → retry the original jpg/png once
+        // before showing a placeholder.
+        const src = img.getAttribute("src") || "";
+        if (/\.webp$/i.test(src) && !img.dataset.webpRetried) {
+          img.dataset.webpRetried = "1";
+          img.src = src.replace(/\.webp$/i, ".jpg");
+          return;
+        }
+        if (/\.jpg$/i.test(src) && img.dataset.webpRetried === "1") {
+          img.dataset.webpRetried = "2";
+          img.src = src.replace(/\.jpg$/i, ".png");
+          return;
+        }
         if (img.dataset.fallbackApplied) return;
         img.dataset.fallbackApplied = "1";
+
         const label = img.getAttribute("alt") || img.getAttribute("src")?.split("/").pop() || "Image";
         const w = img.width || img.clientWidth;
         const h = img.height || img.clientHeight;
