@@ -5,6 +5,8 @@ import { Heart, ShieldCheck, Sparkles, Users, Loader2, CheckCircle2, XCircle } f
 import { supabase } from "@/integrations/supabase/client";
 import { initiateSebpayDonation, checkSebpayStatus, type DonationEvent as DonationTimelineEvent } from "@/lib/sebpay.functions";
 import { DonationTimeline } from "@/components/DonationTimeline";
+import { pageHead } from "@/lib/page-head";
+
 
 export const Route = createFileRoute("/donation")({
   head: () =>
