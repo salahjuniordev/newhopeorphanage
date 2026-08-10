@@ -36,8 +36,43 @@ function rewritePaths(html: string): string {
   }
   // Strip Cloudflare email-decode script artifacts (none of our scripts)
   out = out.replace(/<script[^>]*cloudflare[^<]*<\/script>/gi, "");
+  out = swapWebp(out);
+  out = addLoadingHints(out);
   return out;
 }
+
+// --- Image delivery optimisation -------------------------------------------
+// A build-time manifest of every legacy image that has a .webp sibling.
+const WEBP = new Set(webpManifest as string[]);
+
+/** Point every legacy <img src>/srcset/CSS url() at the smaller WebP twin. */
+function swapWebp(html: string): string {
+  return html.replace(/\/legacy\/images\/[^"')\s]+?\.(?:jpg|jpeg|png)/gi, (m) => {
+    const webp = m.replace(/\.(?:jpg|jpeg|png)$/i, ".webp");
+    return WEBP.has(webp) ? webp : m;
+  });
+}
+
+/**
+ * Adds native lazy-loading + async decoding to every legacy <img>. The first
+ * few images on a page (above the fold) stay eager and get fetchpriority=high
+ * so the LCP image is not delayed. Purely attribute-level: no markup, styling
+ * or layout is changed.
+ */
+const EAGER_IMAGES = 3;
+function addLoadingHints(html: string): number extends never ? never : string {
+  let seen = 0;
+  return html.replace(/<img\b([^>]*)>/gi, (tag, attrs: string) => {
+    if (/\bloading=/i.test(attrs)) return tag;
+    seen += 1;
+    const eager = seen <= EAGER_IMAGES;
+    const extra = eager
+      ? ' loading="eager" fetchpriority="high" decoding="async"'
+      : ' loading="lazy" decoding="async"';
+    return `<img${attrs}${extra}>`;
+  });
+}
+
 
 
 export interface LegacyContent {
