@@ -7,16 +7,18 @@ import { initiateSebpayDonation, checkSebpayStatus, type DonationEvent as Donati
 import { DonationTimeline } from "@/components/DonationTimeline";
 
 export const Route = createFileRoute("/donation")({
-  head: () => ({
-    meta: [
-      { title: "Donate — New Hope Orphanage" },
-      { name: "description", content: "Support New Hope Orphanage. Every donation feeds, educates, and protects a child in Yaoundé, Cameroon." },
-      { property: "og:title", content: "Donate — New Hope Orphanage" },
-      { property: "og:description", content: "Your gift transforms lives. Donate to New Hope Orphanage today." },
-    ],
-  }),
+  head: () =>
+    pageHead({
+      path: "/donation",
+      title: "Faire un don — New Hope Orphanage",
+      description:
+        "Faites un don sécurisé par Mobile Money (MTN, Orange, Moov, Wave) à New Hope Orphanage. Chaque don nourrit, soigne et scolarise un enfant à Yaoundé.",
+      ogTitle: "Faire un don — New Hope Orphanage",
+      ogDescription: "Votre don change une vie. Soutenez les enfants de New Hope Orphanage dès aujourd'hui.",
+    }),
   component: DonationPage,
 });
+
 
 const CAUSES = [
   { id: "general", label: "Where most needed" },
