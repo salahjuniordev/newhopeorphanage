@@ -2,27 +2,19 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
-import nhoLogo from "@/assets/nho-logo.png.asset.json";
+import { pageHead } from "@/lib/page-head";
+
+const LOGO_SRC = "/nho-logo.webp";
 
 export const Route = createFileRoute("/login")({
-  head: () => ({
-    meta: [
-      { title: "Sign In or Register | New Hope Orphanage" },
-      {
-        name: "description",
-        content:
-          "Sign in or create your New Hope Orphanage account to donate, track your giving history and manage your donor profile.",
-      },
-      { property: "og:title", content: "Sign In or Register | New Hope Orphanage" },
-      {
-        property: "og:description",
-        content:
-          "Access your New Hope Orphanage donor dashboard, track donations and support children in Yaoundé, Cameroon.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: () =>
+    pageHead({
+      path: "/login",
+      title: "Connexion et inscription — New Hope Orphanage",
+      description:
+        "Connectez-vous ou créez votre compte New Hope Orphanage pour faire un don, suivre l'historique de vos dons et gérer votre profil de donateur.",
+    }),
+
   component: AuthPage,
 });
 
@@ -110,7 +102,7 @@ function AuthPage() {
       <aside className="nho-auth-aside">
         <div className="nho-auth-glow" aria-hidden="true" />
         <div className="nho-auth-aside-top">
-          <img className="nho-auth-mark" src={nhoLogo.url} alt="New Hope Orphanage" />
+          <img className="nho-auth-mark" src={LOGO_SRC} alt="New Hope Orphanage" width={80} height={80} decoding="async" />
           <span className="nho-auth-chip">Yaoundé, Cameroon · Est. 2018</span>
         </div>
 
