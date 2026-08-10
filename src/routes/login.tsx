@@ -265,7 +265,7 @@ const AUTH_CSS = `
   background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:rgba(255,255,255,.78);
 }
 .nho-auth-aside-mid h2{
-  font-family:'Playfair Display',serif;font-size:2.05rem;line-height:1.35;margin:0 0 14px;font-weight:700;
+  font-family:'Playfair Display',serif;font-size:2.05rem;line-height:1.35;margin:0 0 14px;font-weight:700;color:#fff;
 }
 .nho-auth-aside-mid h2 span{color:var(--nho-accent-2)}
 .nho-auth-aside-mid p{margin:0;color:rgba(255,255,255,.7);font-size:.95rem;line-height:1.6;max-width:34ch}
@@ -297,7 +297,7 @@ const AUTH_CSS = `
   font:inherit;font-size:.9rem;font-weight:600;color:var(--nho-muted);cursor:pointer;transition:color .25s;
 }
 .nho-auth-tabs button.is-on{color:#fff}
-.nho-auth-title{font-family:'Playfair Display',serif;font-size:1.75rem;margin:0 0 6px;font-weight:700}
+.nho-auth-title{font-family:'Playfair Display',serif;font-size:1.75rem;margin:0 0 6px;font-weight:700;color:var(--nho-ink)}
 .nho-auth-desc{color:var(--nho-muted);font-size:.92rem;margin:0 0 22px}
 .nho-auth-alert{padding:11px 14px;border-radius:12px;font-size:.85rem;margin-bottom:16px}
 .nho-auth-alert.ok{background:#ECFBF3;color:#1E7A4D;border:1px solid #BEE9D4}
