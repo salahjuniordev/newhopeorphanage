@@ -102,7 +102,7 @@ function AuthPage() {
       <aside className="nho-auth-aside">
         <div className="nho-auth-glow" aria-hidden="true" />
         <div className="nho-auth-aside-top">
-          <img className="nho-auth-mark" src={nhoLogo.url} alt="New Hope Orphanage" />
+          <img className="nho-auth-mark" src={LOGO_SRC} alt="New Hope Orphanage" width={80} height={80} decoding="async" />
           <span className="nho-auth-chip">Yaoundé, Cameroon · Est. 2018</span>
         </div>
 
