@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 interface LegacyPageProps {
   html: string;
+  /** Kept for callers; the route head() owns the document title. */
   title?: string;
 }
 
@@ -55,7 +56,7 @@ function activeHrefFor(pathname: string): string | null {
   return p || "/";
 }
 
-export function LegacyPage({ html, title }: LegacyPageProps) {
+export function LegacyPage({ html }: LegacyPageProps) {
   const { styles, body } = extractLegacy(html);
   const ref = useRef<HTMLDivElement>(null);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -64,10 +65,6 @@ export function LegacyPage({ html, title }: LegacyPageProps) {
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  useEffect(() => {
-    if (title) document.title = title;
-  }, [title]);
 
   // After mount: highlight active nav link, wire fallbacks, init plugins.
   useEffect(() => {
