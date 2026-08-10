@@ -75,7 +75,7 @@ export function SiteNavbar() {
     <header className={`nho-nav ${scrolled ? "is-scrolled" : ""}`}>
       <div className="nho-nav-inner">
         <Link to="/" className="nho-brand" aria-label="New Hope Orphanage">
-          <img src={nhoLogo.url} alt="New Hope Orphanage" />
+          <img src={LOGO_SRC} alt="New Hope Orphanage" width={80} height={80} fetchPriority="high" decoding="async" />
         </Link>
 
         <nav className={`nho-links ${open ? "is-open" : ""}`} aria-label="Primary">
