@@ -205,21 +205,21 @@ function DonationPage() {
     const dateStr = new Date().toLocaleString();
     const html = `<!doctype html><html><head><meta charset="utf-8"><title>Donation Receipt ${shortId}</title>
 <style>
-body{font-family:'Helvetica Neue',Arial,sans-serif;color:#1a1208;max-width:720px;margin:40px auto;padding:0 24px}
-.hd{display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #f19100;padding-bottom:16px}
-.hd h1{font-family:Georgia,serif;font-size:28px;margin:0;color:#c97200}
+body{font-family:'Helvetica Neue',Arial,sans-serif;color:#020D19;max-width:720px;margin:40px auto;padding:0 24px}
+.hd{display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #FF6D00;padding-bottom:16px}
+.hd h1{font-family:Georgia,serif;font-size:28px;margin:0;color:#E55F00}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;margin:24px 0}
-.grid div{padding:10px 0;border-bottom:1px dashed #eadfc7}
-.grid span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#8a7050}
+.grid div{padding:10px 0;border-bottom:1px dashed #E5E5E5}
+.grid span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#828282}
 .grid strong{font-size:15px}
-.amt{background:linear-gradient(135deg,#fff3df,#ffe6c2);padding:20px;border-radius:14px;text-align:center;margin:24px 0}
-.amt div:first-child{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#8a7050}
-.amt div:last-child{font-size:36px;font-weight:800;color:#c97200;margin-top:6px}
-.ft{margin-top:32px;padding-top:16px;border-top:1px solid #eadfc7;color:#6a553a;font-size:13px;line-height:1.6}
-.thx{font-family:Georgia,serif;font-style:italic;color:#c97200;text-align:center;font-size:18px;margin:24px 0}
+.amt{background:linear-gradient(135deg,#FFF1E6,#FFE0CC);padding:20px;border-radius:14px;text-align:center;margin:24px 0}
+.amt div:first-child{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#828282}
+.amt div:last-child{font-size:36px;font-weight:800;color:#E55F00;margin-top:6px}
+.ft{margin-top:32px;padding-top:16px;border-top:1px solid #E5E5E5;color:#6B6B6B;font-size:13px;line-height:1.6}
+.thx{font-family:Georgia,serif;font-style:italic;color:#E55F00;text-align:center;font-size:18px;margin:24px 0}
 @media print{.noprint{display:none}}
 .noprint{text-align:center;margin-top:24px}
-button{padding:10px 24px;background:#f19100;color:#fff;border:0;border-radius:8px;font-size:14px;cursor:pointer;font-weight:600}
+button{padding:10px 24px;background:#FF6D00;color:#fff;border:0;border-radius:8px;font-size:14px;cursor:pointer;font-weight:600}
 </style></head><body>
 <div class="hd"><div><h1>New Hope Orphanage</h1><small>Yaoundé, Cameroon</small></div><div style="text-align:right"><strong>Donation Receipt</strong><br><small>#${shortId}</small></div></div>
 <div class="amt"><div>Total Contribution</div><div>${country.currency} ${finalAmount.toLocaleString()}</div></div>
@@ -249,7 +249,7 @@ button{padding:10px 24px;background:#f19100;color:#fff;border:0;border-radius:8p
         <style>{DONATE_CSS}</style>
         <div className="nho-donate-thanks">
           <div className="nho-donate-thanks-icon" style={{
-            background: isRejected ? "linear-gradient(135deg,#c73838,#ff7a7a)" : isApproved ? "linear-gradient(135deg,#1f9d55,#7ce495)" : "linear-gradient(135deg,#f19100,#ffc84a)",
+            background: isRejected ? "linear-gradient(135deg,#c73838,#ff7a7a)" : isApproved ? "linear-gradient(135deg,#1f9d55,#7ce495)" : "linear-gradient(135deg,#FF6D00,#FF9A3D)",
           }}>
             {isApproved ? <CheckCircle2 size={44}/> : isRejected ? <XCircle size={44}/> : <Loader2 size={44} className="nho-spin"/>}
           </div>
@@ -264,7 +264,7 @@ button{padding:10px 24px;background:#f19100;color:#fff;border:0;border-radius:8p
               : <>{tx.message ?? `We sent a Mobile Money request to your ${OPERATOR_LABEL[operator] ?? operator} account. Approve it on your phone to complete the donation of ${country.currency} ${finalAmount.toLocaleString()}.`}</>
             }
           </p>
-          <div style={{fontSize:".82rem",color:"#8a7050",marginTop:-10,marginBottom:18}}>Reference: {tx.external_reference}</div>
+          <div style={{fontSize:".82rem",color:"#828282",marginTop:-10,marginBottom:18}}>Reference: {tx.external_reference}</div>
           <div className="nho-donate-thanks-cta">
             {isApproved && (
               <button type="button" onClick={downloadReceipt} className="nho-donate-btn-primary">Download receipt (PDF)</button>
@@ -338,7 +338,7 @@ button{padding:10px 24px;background:#f19100;color:#fff;border:0;border-radius:8p
           <label className="nho-donate-custom">
             Custom amount
             <div>
-              <span style={{padding:"12px 14px",border:"1.5px solid #ddd3c0",borderRadius:11,fontWeight:700,background:"#fff"}}>{country.currency}</span>
+              <span style={{padding:"12px 14px",border:"1.5px solid #E5E5E5",borderRadius:11,fontWeight:700,background:"#fff"}}>{country.currency}</span>
               <input
                 inputMode="decimal"
                 placeholder="Enter amount"
@@ -372,7 +372,7 @@ button{padding:10px 24px;background:#f19100;color:#fff;border:0;border-radius:8p
             </label>
             <label className="nho-donate-full">Mobile Money phone number
               <div style={{display:"flex",gap:8}}>
-                <span style={{padding:"12px 14px",border:"1.5px solid #ddd3c0",borderRadius:11,fontWeight:700,background:"#fff"}}>+{country.prefix}</span>
+                <span style={{padding:"12px 14px",border:"1.5px solid #E5E5E5",borderRadius:11,fontWeight:700,background:"#fff"}}>+{country.prefix}</span>
                 <input
                   required
                   inputMode="tel"
@@ -426,73 +426,73 @@ button{padding:10px 24px;background:#f19100;color:#fff;border:0;border-radius:8p
 
 
 const DONATE_CSS = `
-.nho-donate-wrap{max-width:1180px;margin:0 auto;padding:48px 22px 60px;font-family:'Onest','Inter',system-ui,sans-serif;color:#1a1208}
+.nho-donate-wrap{max-width:1180px;margin:0 auto;padding:48px 22px 60px;font-family:'Onest','Inter',system-ui,sans-serif;color:#020D19}
 .nho-donate-hero{text-align:center;margin-bottom:34px}
-.nho-donate-eyebrow{display:inline-block;padding:6px 14px;border-radius:999px;background:rgba(241,145,0,.12);color:#c97200;font-size:.78rem;font-weight:700;letter-spacing:1px;text-transform:uppercase}
-.nho-donate-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);margin:14px 0 10px;line-height:1.15;color:#1a1208}
-.nho-donate-hero p{color:#6a553a;max-width:640px;margin:0 auto;font-size:1.02rem}
-.nho-donate-trust{display:flex;flex-wrap:wrap;justify-content:center;gap:22px;margin-top:18px;color:#8a7050;font-size:.85rem}
+.nho-donate-eyebrow{display:inline-block;padding:6px 14px;border-radius:999px;background:rgba(255,109,0,.12);color:#E55F00;font-size:.78rem;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.nho-donate-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);margin:14px 0 10px;line-height:1.15;color:#020D19}
+.nho-donate-hero p{color:#6B6B6B;max-width:640px;margin:0 auto;font-size:1.02rem}
+.nho-donate-trust{display:flex;flex-wrap:wrap;justify-content:center;gap:22px;margin-top:18px;color:#828282;font-size:.85rem}
 .nho-donate-trust span{display:inline-flex;align-items:center;gap:6px}
 .nho-donate-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(280px,1fr);gap:24px}
 @media (max-width:900px){.nho-donate-grid{grid-template-columns:1fr}}
-.nho-donate-card{background:#fff;border:1px solid #ede7da;border-radius:22px;padding:30px;box-shadow:0 18px 50px -28px rgba(26,18,8,.25)}
-.nho-donate-card h2{font-family:'Playfair Display',serif;font-size:1.18rem;margin:0 0 14px;color:#1a1208}
+.nho-donate-card{background:#fff;border:1px solid #EFEFEF;border-radius:22px;padding:30px;box-shadow:0 18px 50px -28px rgba(26,18,8,.25)}
+.nho-donate-card h2{font-family:'Playfair Display',serif;font-size:1.18rem;margin:0 0 14px;color:#020D19}
 .nho-donate-card h2:not(:first-child){margin-top:26px}
 .nho-donate-amounts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 @media (min-width:520px){.nho-donate-amounts{grid-template-columns:repeat(6,1fr)}}
-.nho-donate-amounts button{padding:14px 6px;border-radius:14px;border:1.5px solid #ede0c8;background:#fffaf0;font:inherit;font-weight:700;color:#1a1208;cursor:pointer;transition:.18s;font-size:.9rem}
-.nho-donate-amounts button:hover{border-color:#f19100}
-.nho-donate-amounts button.is-on{background:linear-gradient(135deg,#f19100,#ffc84a);color:#fff;border-color:transparent;box-shadow:0 8px 18px rgba(241,145,0,.32)}
-.nho-donate-custom{display:block;margin-top:12px;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#5a4730}
+.nho-donate-amounts button{padding:14px 6px;border-radius:14px;border:1.5px solid #EFEFEF;background:#FFFFFF;font:inherit;font-weight:700;color:#020D19;cursor:pointer;transition:.18s;font-size:.9rem}
+.nho-donate-amounts button:hover{border-color:#FF6D00}
+.nho-donate-amounts button.is-on{background:linear-gradient(135deg,#FF6D00,#FF9A3D);color:#fff;border-color:transparent;box-shadow:0 8px 18px rgba(255,109,0,.32)}
+.nho-donate-custom{display:block;margin-top:12px;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#4A4A4A}
 .nho-donate-custom>div{display:flex;gap:8px;margin-top:6px}
-.nho-donate-custom input{padding:12px 14px;border:1.5px solid #ddd3c0;border-radius:11px;font:inherit;background:#fff;outline:none;flex:1}
-.nho-donate-custom input:focus,.nho-donate-fields input:focus,.nho-donate-fields textarea:focus,.nho-donate-fields select:focus{border-color:#f19100;box-shadow:0 0 0 3px rgba(241,145,0,.15)}
+.nho-donate-custom input{padding:12px 14px;border:1.5px solid #E5E5E5;border-radius:11px;font:inherit;background:#fff;outline:none;flex:1}
+.nho-donate-custom input:focus,.nho-donate-fields input:focus,.nho-donate-fields textarea:focus,.nho-donate-fields select:focus{border-color:#FF6D00;box-shadow:0 0 0 3px rgba(255,109,0,.15)}
 .nho-donate-causes{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
-.nho-donate-causes label{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1.5px solid #ede0c8;border-radius:14px;cursor:pointer;background:#fffaf0;font-weight:600;font-size:.92rem;color:#1a1208;transition:.18s}
-.nho-donate-causes label input{accent-color:#f19100}
-.nho-donate-causes label.is-on{border-color:#f19100;background:#fff3df}
+.nho-donate-causes label{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1.5px solid #EFEFEF;border-radius:14px;cursor:pointer;background:#FFFFFF;font-weight:600;font-size:.92rem;color:#020D19;transition:.18s}
+.nho-donate-causes label input{accent-color:#FF6D00}
+.nho-donate-causes label.is-on{border-color:#FF6D00;background:#FFF1E6}
 .nho-donate-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media (max-width:560px){.nho-donate-fields{grid-template-columns:1fr}}
-.nho-donate-fields label{display:flex;flex-direction:column;gap:6px;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#5a4730}
+.nho-donate-fields label{display:flex;flex-direction:column;gap:6px;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#4A4A4A}
 .nho-donate-fields .nho-donate-full{grid-column:1/-1}
-.nho-donate-fields input,.nho-donate-fields textarea,.nho-donate-fields select{padding:12px 14px;border:1.5px solid #ddd3c0;border-radius:11px;font:inherit;background:#fff;outline:none;resize:vertical;color:#1a1208}
+.nho-donate-fields input,.nho-donate-fields textarea,.nho-donate-fields select{padding:12px 14px;border:1.5px solid #E5E5E5;border-radius:11px;font:inherit;background:#fff;outline:none;resize:vertical;color:#020D19}
 .nho-donate-err{margin-top:14px;padding:11px 14px;border-radius:10px;background:#fdf0f0;color:#b03333;border:1px solid #f5c6c6;font-size:.88rem}
-.nho-donate-submit{margin-top:22px;width:100%;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px;border:0;border-radius:14px;font:inherit;font-weight:700;font-size:1rem;color:#fff;cursor:pointer;background:linear-gradient(135deg,#f19100,#ffc84a);box-shadow:0 12px 30px rgba(241,145,0,.4);transition:.2s}
-.nho-donate-submit:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 16px 38px rgba(241,145,0,.5)}
+.nho-donate-submit{margin-top:22px;width:100%;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px;border:0;border-radius:14px;font:inherit;font-weight:700;font-size:1rem;color:#fff;cursor:pointer;background:linear-gradient(135deg,#FF6D00,#FF9A3D);box-shadow:0 12px 30px rgba(255,109,0,.4);transition:.2s}
+.nho-donate-submit:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 16px 38px rgba(255,109,0,.5)}
 .nho-donate-submit:disabled{opacity:.7;cursor:not-allowed}
-.nho-donate-hint{margin:14px 0 0;text-align:center;color:#8a7050;font-size:.85rem}
-.nho-donate-hint a{color:#c97200;font-weight:700;text-decoration:none}
+.nho-donate-hint{margin:14px 0 0;text-align:center;color:#828282;font-size:.85rem}
+.nho-donate-hint a{color:#E55F00;font-weight:700;text-decoration:none}
 .nho-donate-side{display:flex;flex-direction:column;gap:18px}
-.nho-donate-side-card{background:#fff;border:1px solid #ede7da;border-radius:22px;padding:24px}
-.nho-donate-side-card.alt{background:linear-gradient(160deg,#fff3df,#ffe6c2);border:0}
-.nho-donate-side-card h3{font-family:'Playfair Display',serif;margin:0 0 14px;font-size:1.1rem;color:#1a1208}
+.nho-donate-side-card{background:#fff;border:1px solid #EFEFEF;border-radius:22px;padding:24px}
+.nho-donate-side-card.alt{background:linear-gradient(160deg,#FFF1E6,#FFE0CC);border:0}
+.nho-donate-side-card h3{font-family:'Playfair Display',serif;margin:0 0 14px;font-size:1.1rem;color:#020D19}
 .nho-donate-side-card ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
-.nho-donate-side-card li{display:flex;align-items:baseline;gap:12px;padding:10px 12px;border-radius:12px;background:#fffaf0}
-.nho-donate-side-card li strong{color:#c97200;font-size:1.05rem;min-width:64px}
-.nho-donate-side-card li span{color:#6a553a;font-size:.9rem}
-.nho-donate-side-card p{color:#5a4730;font-size:.92rem;margin:0 0 12px}
-.nho-donate-btn-ghost{display:inline-block;padding:10px 18px;border-radius:999px;background:#fff;border:1.5px solid #f19100;color:#c97200;font-weight:700;text-decoration:none;font-size:.88rem}
-.nho-donate-btn-primary{display:inline-block;padding:12px 22px;border-radius:999px;background:linear-gradient(135deg,#f19100,#ffc84a);color:#fff;font-weight:700;text-decoration:none;font-size:.95rem;box-shadow:0 10px 24px rgba(241,145,0,.4);border:0;cursor:pointer}
-.nho-donate-thanks{max-width:560px;margin:60px auto;text-align:center;background:#fff;padding:46px 34px;border-radius:24px;border:1px solid #ede7da;box-shadow:0 20px 60px -20px rgba(26,18,8,.2)}
-.nho-donate-thanks-icon{width:80px;height:80px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f19100,#ffc84a);color:#fff;margin-bottom:18px}
-.nho-donate-thanks h1{font-family:'Playfair Display',serif;font-size:1.9rem;margin:0 0 10px;color:#1a1208}
-.nho-donate-thanks p{color:#6a553a;margin:0 0 22px}
+.nho-donate-side-card li{display:flex;align-items:baseline;gap:12px;padding:10px 12px;border-radius:12px;background:#FFFFFF}
+.nho-donate-side-card li strong{color:#E55F00;font-size:1.05rem;min-width:64px}
+.nho-donate-side-card li span{color:#6B6B6B;font-size:.9rem}
+.nho-donate-side-card p{color:#4A4A4A;font-size:.92rem;margin:0 0 12px}
+.nho-donate-btn-ghost{display:inline-block;padding:10px 18px;border-radius:999px;background:#fff;border:1.5px solid #FF6D00;color:#E55F00;font-weight:700;text-decoration:none;font-size:.88rem}
+.nho-donate-btn-primary{display:inline-block;padding:12px 22px;border-radius:999px;background:linear-gradient(135deg,#FF6D00,#FF9A3D);color:#fff;font-weight:700;text-decoration:none;font-size:.95rem;box-shadow:0 10px 24px rgba(255,109,0,.4);border:0;cursor:pointer}
+.nho-donate-thanks{max-width:560px;margin:60px auto;text-align:center;background:#fff;padding:46px 34px;border-radius:24px;border:1px solid #EFEFEF;box-shadow:0 20px 60px -20px rgba(26,18,8,.2)}
+.nho-donate-thanks-icon{width:80px;height:80px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#FF6D00,#FF9A3D);color:#fff;margin-bottom:18px}
+.nho-donate-thanks h1{font-family:'Playfair Display',serif;font-size:1.9rem;margin:0 0 10px;color:#020D19}
+.nho-donate-thanks p{color:#6B6B6B;margin:0 0 22px}
 .nho-donate-thanks-cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .nho-spin{animation:nho-spin 1s linear infinite}
 @keyframes nho-spin{to{transform:rotate(360deg)}}
-.nho-tl{margin-top:26px;text-align:left;background:#fffaf0;border:1px solid #f0e4c9;border-radius:16px;padding:18px 20px}
+.nho-tl{margin-top:26px;text-align:left;background:#FFFFFF;border:1px solid #EFEFEF;border-radius:16px;padding:18px 20px}
 .nho-tl.is-compact{margin-top:12px;padding:12px 14px;background:#fff;border-color:#efe6d3}
 .nho-tl-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:10px;flex-wrap:wrap}
-.nho-tl-head strong{font-size:.88rem;letter-spacing:.4px;text-transform:uppercase;color:#5a4730}
-.nho-tl-ref{font-size:.72rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#8a7050}
-.nho-tl-empty{color:#8a7050;font-size:.9rem}
+.nho-tl-head strong{font-size:.88rem;letter-spacing:.4px;text-transform:uppercase;color:#4A4A4A}
+.nho-tl-ref{font-size:.72rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#828282}
+.nho-tl-empty{color:#828282;font-size:.9rem}
 .nho-tl-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px;position:relative}
-.nho-tl-list:before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:#f0e4c9;border-radius:2px}
+.nho-tl-list:before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:#EFEFEF;border-radius:2px}
 .nho-tl-list li{position:relative;padding-left:22px}
 .nho-tl-dot{position:absolute;left:0;top:6px;width:14px;height:14px;border-radius:50%;box-shadow:0 0 0 3px #fff}
 .nho-tl-body{display:flex;flex-direction:column;gap:2px}
 .nho-tl-row{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
-.nho-tl-row strong{color:#1a1208;font-size:.94rem}
-.nho-tl-row time{color:#8a7050;font-size:.76rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
-.nho-tl-body p{margin:2px 0 0;color:#5a4730;font-size:.86rem}
+.nho-tl-row strong{color:#020D19;font-size:.94rem}
+.nho-tl-row time{color:#828282;font-size:.76rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.nho-tl-body p{margin:2px 0 0;color:#4A4A4A;font-size:.86rem}
 `;

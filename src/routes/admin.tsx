@@ -45,7 +45,7 @@ interface UserRow {
  roles: string[];
 }
 
-const PALETTE = ["#f19100", "#ffc84a", "#c97200", "#5a3500", "#2c1a00", "#ff6a3d"];
+const PALETTE = ["#FF6D00", "#FF9A3D", "#E55F00", "#0A2036", "#020D19", "#ff6a3d"];
 
 function AdminApp() {
  const navigate = useNavigate();
@@ -343,10 +343,10 @@ function OverviewTab({ stats, recent, range, setRange, setPreset }: {
  <div className="adm-content">
  <div className="adm-card" style={{ padding: "14px 18px" }}>
  <div className="adm-toolbar" style={{ flexWrap: "wrap", gap: 10 }}>
- <strong style={{ fontSize: 13, color: "#5a4730" }}>Date range</strong>
+ <strong style={{ fontSize: 13, color: "#4A4A4A" }}>Date range</strong>
  <input type="date" className="adm-input" value={range.from} max={range.to}
  onChange={(e) => setRange({...range, from: e.target.value })} />
- <span style={{ color: "#8a7050" }}>→</span>
+ <span style={{ color: "#828282" }}>→</span>
  <input type="date" className="adm-input" value={range.to} min={range.from}
  onChange={(e) => setRange({...range, to: e.target.value })} />
  <button className="adm-btn adm-btn-ghost" onClick={() => setPreset(7)}>7d</button>
@@ -370,15 +370,15 @@ function OverviewTab({ stats, recent, range, setRange, setPreset }: {
  <AreaChart data={stats.days}>
  <defs>
  <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
- <stop offset="0%" stopColor="#f19100" stopOpacity={0.55} />
- <stop offset="100%" stopColor="#f19100" stopOpacity={0.02} />
+ <stop offset="0%" stopColor="#FF6D00" stopOpacity={0.55} />
+ <stop offset="100%" stopColor="#FF6D00" stopOpacity={0.02} />
  </linearGradient>
  </defs>
  <CartesianGrid strokeDasharray="3 3" stroke="#efe6d3" />
- <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#8a7050" }} />
- <YAxis tick={{ fontSize: 11, fill: "#8a7050" }} />
- <Tooltip contentStyle={{ borderRadius: 10, border: "1px solid #eadfc7" }} />
- <Area type="monotone" dataKey="amount" stroke="#f19100" strokeWidth={2.5} fill="url(#grad)" />
+ <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#828282" }} />
+ <YAxis tick={{ fontSize: 11, fill: "#828282" }} />
+ <Tooltip contentStyle={{ borderRadius: 10, border: "1px solid #E5E5E5" }} />
+ <Area type="monotone" dataKey="amount" stroke="#FF6D00" strokeWidth={2.5} fill="url(#grad)" />
  </AreaChart>
  </ResponsiveContainer>
  </div>
@@ -410,7 +410,7 @@ function OverviewTab({ stats, recent, range, setRange, setPreset }: {
  <XAxis dataKey="name" tick={{ fontSize: 11 }} />
  <YAxis tick={{ fontSize: 11 }} />
  <Tooltip />
- <Bar dataKey="value" fill="#c97200" radius={[8, 8, 0, 0]} />
+ <Bar dataKey="value" fill="#E55F00" radius={[8, 8, 0, 0]} />
  </BarChart>
  </ResponsiveContainer>
  </div>
@@ -452,7 +452,7 @@ function DonationsTab({ rows }: { rows: DonationRow[] }) {
  };
  const statusColor: Record<string, string> = {
  approved:"#1f9d55", success:"#1f9d55", completed:"#1f9d55",
- pending:"#c97200", rejected:"#c73838", failed:"#c73838",
+ pending:"#E55F00", rejected:"#c73838", failed:"#c73838",
  };
  return (
  <div className="adm-content">
@@ -474,7 +474,7 @@ function DonationsTab({ rows }: { rows: DonationRow[] }) {
  <div className="adm-list-secondary">{r.donor_email}</div>
  </td>
  <td className="adm-t-amount">{r.currency} {Number(r.amount).toLocaleString()}</td>
- <td style={{fontWeight:700,color:statusColor[r.status] ?? "#8a7050",textTransform:"capitalize"}}>{r.status}</td>
+ <td style={{fontWeight:700,color:statusColor[r.status] ?? "#828282",textTransform:"capitalize"}}>{r.status}</td>
  <td style={{fontFamily:"ui-monospace,monospace",fontSize:".8rem"}}>{r.external_reference ?? "—"}</td>
  <td>{r.cause || "—"}</td>
  <td className="adm-t-actions">
@@ -484,7 +484,7 @@ function DonationsTab({ rows }: { rows: DonationRow[] }) {
  </td>
  </tr>
  {openId === r.id && (
- <tr><td colSpan={7} style={{background:"#fffaf0"}}>
+ <tr><td colSpan={7} style={{background:"#FFFFFF"}}>
  <AdminTimeline donationId={r.id} externalReference={r.external_reference} />
  </td></tr>
  )}
@@ -505,7 +505,7 @@ function AdminTimeline({ donationId, externalReference }: { donationId: string; 
  useEffect(() => {
  fetchEvents({ data: { donation_id: donationId } }).then((r) => setEvents(r.events)).catch(() => setEvents([]));
  }, [donationId, fetchEvents]);
- if (!events) return <p style={{padding:12,color:"#8a7050"}}>Loading timeline…</p>;
+ if (!events) return <p style={{padding:12,color:"#828282"}}>Loading timeline…</p>;
  return <div style={{padding:12}}><DonationTimeline events={events} externalReference={externalReference} compact /></div>;
 }
 
@@ -722,7 +722,7 @@ function InvitesTab({ rows, onInvite, onResend, onRevoke }: {
  <div className="adm-toolbar" style={{ gap: 6 }}>
  {(["all", "pending", "accepted", "expired"] as const).map((s) => (
  <button key={s} className={`adm-btn adm-btn-ghost ${filter === s? "is-on": ""}`}
- style={filter === s? { background: "#f19100", color: "#fff", borderColor: "#f19100" }: undefined}
+ style={filter === s? { background: "#FF6D00", color: "#fff", borderColor: "#FF6D00" }: undefined}
  onClick={() => setFilter(s)}>
  {s[0].toUpperCase() + s.slice(1)} ({counts[s]})
  </button>

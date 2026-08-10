@@ -116,7 +116,7 @@ function Dashboard() {
  <p>{session.user.email}</p>
  </div>
  {isAdmin && (
- <Link to="/admin" className="nho-dash-signout" style={{ marginRight: 8, background: "linear-gradient(135deg,#f19100,#ffc84a)", color: "#fff", borderColor: "transparent" }}>
+ <Link to="/admin" className="nho-dash-signout" style={{ marginRight: 8, background: "linear-gradient(135deg,#FF6D00,#FF9A3D)", color: "#fff", borderColor: "transparent" }}>
  <Sparkles size={16}/> Admin console
  </Link>
  )}
@@ -127,9 +127,9 @@ function Dashboard() {
  </header>
 
  <section className="nho-dash-stats">
- <Stat icon={<Heart size={20}/>} label="Total donated" value={`$${total.toFixed(2)}`} accent="#f19100"/>
+ <Stat icon={<Heart size={20}/>} label="Total donated" value={`$${total.toFixed(2)}`} accent="#FF6D00"/>
  <Stat icon={<Sparkles size={20}/>} label="Donations" value={String(donations.length)} accent="#3db07a"/>
- <Stat icon={<Calendar size={20}/>} label="Member since" value={new Date(session.user.created_at).toLocaleDateString()} accent="#5a3500"/>
+ <Stat icon={<Calendar size={20}/>} label="Member since" value={new Date(session.user.created_at).toLocaleDateString()} accent="#0A2036"/>
  </section>
 
  <nav className="nho-dash-tabs" role="tablist">
@@ -230,18 +230,18 @@ function DonationRow({ d }: { d: Donation }) {
  };
  const statusColor: Record<string, string> = {
  approved:"#1f9d55", success:"#1f9d55", completed:"#1f9d55",
- pending:"#c97200", rejected:"#c73838", failed:"#c73838",
+ pending:"#E55F00", rejected:"#c73838", failed:"#c73838",
  };
  return (
  <>
  <div className="nho-dash-trow" onClick={toggle} style={{cursor:"pointer"}}>
  <span>{new Date(d.created_at).toLocaleDateString()}</span>
  <span>{d.cause ?? "General"}</span>
- <span style={{fontWeight:700,color:statusColor[d.status] ?? "#8a7050",textTransform:"capitalize"}}>
+ <span style={{fontWeight:700,color:statusColor[d.status] ?? "#828282",textTransform:"capitalize"}}>
  {d.status} <ChevronDown size={12} style={{transform:open?"rotate(180deg)":"none",transition:".2s"}}/>
  </span>
  <span className="muted" style={{fontFamily:"ui-monospace,monospace",fontSize:".8rem"}}>{d.external_reference ?? "—"}</span>
- <span style={{textAlign:"right",fontWeight:700,color:"#c97200"}}>{d.currency} {Number(d.amount).toFixed(2)}</span>
+ <span style={{textAlign:"right",fontWeight:700,color:"#E55F00"}}>{d.currency} {Number(d.amount).toFixed(2)}</span>
  </div>
  {open && (
  <div style={{padding:"4px 8px 16px",gridColumn:"1/-1"}}>
@@ -266,50 +266,50 @@ function Stat({ icon, label, value, accent }: { icon: React.ReactNode; label: st
 }
 
 const DASH_CSS = `
-.nho-dash-wrap{max-width:1180px;margin:0 auto;padding:40px 22px 60px;font-family:'Onest','Inter',system-ui,sans-serif;color:#1a1208}
-.nho-dash-hero{background:linear-gradient(135deg,#fff3df 0%,#ffe6c2 100%);border-radius:24px;padding:30px;margin-bottom:22px;border:1px solid #f6e1bb}
+.nho-dash-wrap{max-width:1180px;margin:0 auto;padding:40px 22px 60px;font-family:'Onest','Inter',system-ui,sans-serif;color:#020D19}
+.nho-dash-hero{background:linear-gradient(135deg,#FFF1E6 0%,#FFE0CC 100%);border-radius:24px;padding:30px;margin-bottom:22px;border:1px solid #f6e1bb}
 .nho-dash-hero-inner{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-.nho-dash-eyebrow{display:inline-block;padding:4px 12px;border-radius:999px;background:rgba(241,145,0,.18);color:#c97200;font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase}
-.nho-dash-hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.7rem,3vw,2.3rem);margin:8px 0 4px;color:#1a1208}
-.nho-dash-hero p{margin:0;color:#6a553a;font-size:.92rem}
-.nho-dash-avatar{width:74px;height:74px;border-radius:50%;background:linear-gradient(135deg,#f19100,#ffc84a);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;overflow:hidden;box-shadow:0 10px 24px rgba(241,145,0,.35)}
+.nho-dash-eyebrow{display:inline-block;padding:4px 12px;border-radius:999px;background:rgba(255,109,0,.18);color:#E55F00;font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.nho-dash-hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.7rem,3vw,2.3rem);margin:8px 0 4px;color:#020D19}
+.nho-dash-hero p{margin:0;color:#6B6B6B;font-size:.92rem}
+.nho-dash-avatar{width:74px;height:74px;border-radius:50%;background:linear-gradient(135deg,#FF6D00,#FF9A3D);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;overflow:hidden;box-shadow:0 10px 24px rgba(255,109,0,.35)}
 .nho-dash-avatar img{width:100%;height:100%;object-fit:cover}
-.nho-dash-signout{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;border:1.5px solid #ddd3c0;background:#fff;font:inherit;font-weight:600;font-size:.85rem;color:#5a4730;cursor:pointer;transition:.2s}
-.nho-dash-signout:hover{border-color:#f19100;color:#c97200}
+.nho-dash-signout{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;border:1.5px solid #E5E5E5;background:#fff;font:inherit;font-weight:600;font-size:.85rem;color:#4A4A4A;cursor:pointer;transition:.2s}
+.nho-dash-signout:hover{border-color:#FF6D00;color:#E55F00}
 .nho-dash-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:22px}
-.nho-dash-stat{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid #ede7da;border-radius:18px;padding:18px 20px}
+.nho-dash-stat{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid #EFEFEF;border-radius:18px;padding:18px 20px}
 .nho-dash-stat-icon{width:44px;height:44px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center}
-.nho-dash-stat small{display:block;color:#8a7050;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.6px}
+.nho-dash-stat small{display:block;color:#828282;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.6px}
 .nho-dash-stat strong{font-family:'Playfair Display',serif;font-size:1.5rem;display:block;line-height:1.1;margin-top:2px}
-.nho-dash-tabs{display:flex;gap:6px;padding:6px;background:#fff;border:1px solid #ede7da;border-radius:14px;margin-bottom:18px;overflow-x:auto}
-.nho-dash-tabs button{flex:1;min-width:120px;padding:11px 14px;border:0;border-radius:10px;font:inherit;font-weight:600;font-size:.9rem;color:#6a553a;background:transparent;cursor:pointer;transition:.2s;white-space:nowrap}
-.nho-dash-tabs button.is-on{background:linear-gradient(135deg,#f19100,#ffc84a);color:#fff;box-shadow:0 6px 14px rgba(241,145,0,.3)}
-.nho-dash-card{background:#fff;border:1px solid #ede7da;border-radius:22px;padding:26px}
-.nho-dash-card.alt{background:linear-gradient(160deg,#fff3df,#ffe6c2);border:0}
-.nho-dash-card h2{font-family:'Playfair Display',serif;font-size:1.2rem;margin:0 0 14px;color:#1a1208}
+.nho-dash-tabs{display:flex;gap:6px;padding:6px;background:#fff;border:1px solid #EFEFEF;border-radius:14px;margin-bottom:18px;overflow-x:auto}
+.nho-dash-tabs button{flex:1;min-width:120px;padding:11px 14px;border:0;border-radius:10px;font:inherit;font-weight:600;font-size:.9rem;color:#6B6B6B;background:transparent;cursor:pointer;transition:.2s;white-space:nowrap}
+.nho-dash-tabs button.is-on{background:linear-gradient(135deg,#FF6D00,#FF9A3D);color:#fff;box-shadow:0 6px 14px rgba(255,109,0,.3)}
+.nho-dash-card{background:#fff;border:1px solid #EFEFEF;border-radius:22px;padding:26px}
+.nho-dash-card.alt{background:linear-gradient(160deg,#FFF1E6,#FFE0CC);border:0}
+.nho-dash-card h2{font-family:'Playfair Display',serif;font-size:1.2rem;margin:0 0 14px;color:#020D19}
 .nho-dash-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
 .nho-dash-overview{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(260px,1fr);gap:16px}
 @media (max-width:780px){.nho-dash-overview{grid-template-columns:1fr}}
-.nho-dash-cta{display:inline-block;padding:11px 20px;border-radius:999px;background:linear-gradient(135deg,#f19100,#ffc84a);color:#fff;font-weight:700;text-decoration:none;font-size:.9rem;border:0;cursor:pointer;font-family:inherit;box-shadow:0 8px 20px rgba(241,145,0,.35)}
+.nho-dash-cta{display:inline-block;padding:11px 20px;border-radius:999px;background:linear-gradient(135deg,#FF6D00,#FF9A3D);color:#fff;font-weight:700;text-decoration:none;font-size:.9rem;border:0;cursor:pointer;font-family:inherit;box-shadow:0 8px 20px rgba(255,109,0,.35)}
 .nho-dash-cta.sm{padding:8px 16px;font-size:.82rem}
 .nho-dash-empty{text-align:center;padding:24px 0}
-.nho-dash-empty p{color:#8a7050;margin:0 0 14px}
+.nho-dash-empty p{color:#828282;margin:0 0 14px}
 .nho-dash-recent{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
-.nho-dash-recent li{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;background:#fffaf0}
-.nho-dash-recent-icon{width:34px;height:34px;border-radius:50%;background:rgba(241,145,0,.18);color:#c97200;display:inline-flex;align-items:center;justify-content:center}
-.nho-dash-recent strong{display:block;color:#1a1208}
-.nho-dash-recent small{color:#8a7050;font-size:.8rem}
+.nho-dash-recent li{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;background:#FFFFFF}
+.nho-dash-recent-icon{width:34px;height:34px;border-radius:50%;background:rgba(255,109,0,.18);color:#E55F00;display:inline-flex;align-items:center;justify-content:center}
+.nho-dash-recent strong{display:block;color:#020D19}
+.nho-dash-recent small{color:#828282;font-size:.8rem}
 .nho-dash-table{display:flex;flex-direction:column}
 .nho-dash-thead,.nho-dash-trow{display:grid;grid-template-columns:.9fr 1fr .9fr 1.2fr .8fr;gap:14px;padding:12px 8px;align-items:center}
-.nho-dash-thead{border-bottom:1px solid #ede7da;font-size:.72rem;text-transform:uppercase;letter-spacing:.6px;color:#8a7050;font-weight:700}
+.nho-dash-thead{border-bottom:1px solid #EFEFEF;font-size:.72rem;text-transform:uppercase;letter-spacing:.6px;color:#828282;font-weight:700}
 .nho-dash-trow{border-bottom:1px solid #f5efe2;font-size:.92rem}
 @media (max-width:640px){.nho-dash-thead{display:none}.nho-dash-trow{grid-template-columns:1fr 1fr;row-gap:4px}}
-.muted{color:#8a7050}
+.muted{color:#828282}
 .nho-dash-profile{display:flex;flex-direction:column;gap:14px;max-width:520px}
-.nho-dash-profile label{display:flex;flex-direction:column;gap:6px;font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#5a4730}
-.nho-dash-profile label svg{display:inline;vertical-align:-2px;margin-right:6px;color:#c97200}
-.nho-dash-profile input{padding:12px 14px;border:1.5px solid #ddd3c0;border-radius:11px;font:inherit;background:#fff;outline:none;color:#1a1208}
-.nho-dash-profile input:focus{border-color:#f19100;box-shadow:0 0 0 3px rgba(241,145,0,.15)}
-.nho-dash-profile input:disabled{background:#f7f1e4;color:#8a7050}
+.nho-dash-profile label{display:flex;flex-direction:column;gap:6px;font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#4A4A4A}
+.nho-dash-profile label svg{display:inline;vertical-align:-2px;margin-right:6px;color:#E55F00}
+.nho-dash-profile input{padding:12px 14px;border:1.5px solid #E5E5E5;border-radius:11px;font:inherit;background:#fff;outline:none;color:#020D19}
+.nho-dash-profile input:focus{border-color:#FF6D00;box-shadow:0 0 0 3px rgba(255,109,0,.15)}
+.nho-dash-profile input:disabled{background:#f7f1e4;color:#828282}
 .nho-dash-save-msg{padding:10px 14px;border-radius:10px;background:#e8f8f0;color:#1e7a4d;border:1px solid #b2e4cc;font-size:.88rem}
 `;
