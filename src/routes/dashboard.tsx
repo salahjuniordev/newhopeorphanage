@@ -7,9 +7,19 @@ import type { Session } from "@supabase/supabase-js";
 import { getDonationEvents, type DonationEvent } from "@/lib/sebpay.functions";
 import { DonationTimeline } from "@/components/DonationTimeline";
 
+import { pageHead } from "@/lib/page-head";
+
 export const Route = createFileRoute("/dashboard")({
+ head: () =>
+   pageHead({
+     path: "/dashboard",
+     title: "Mon espace donateur — New Hope Orphanage",
+     description:
+       "Consultez l'historique de vos dons, le statut de vos paiements et gérez votre profil de donateur New Hope Orphanage.",
+   }),
  component: Dashboard,
 });
+
 
 interface Donation {
  id: string; amount: number; currency: string; cause: string | null;
