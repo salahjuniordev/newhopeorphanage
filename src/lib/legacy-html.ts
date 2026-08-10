@@ -62,7 +62,7 @@ function swapWebp(html: string): string {
  * or layout is changed.
  */
 const EAGER_IMAGES = 3;
-function addLoadingHints(html: string): number extends never ? never : string {
+function addLoadingHints(html: string): string {
   let seen = 0;
   return html.replace(/<img\b([^>]*)>/gi, (tag, attrs: string) => {
     if (/\bloading=/i.test(attrs)) return tag;
