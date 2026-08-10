@@ -18,10 +18,19 @@ import {
 import { getDonationEvents, type DonationEvent } from "@/lib/sebpay.functions";
 import { DonationTimeline } from "@/components/DonationTimeline";
 import "@/components/admin.css";
+import { pageHead } from "@/lib/page-head";
 
 export const Route = createFileRoute("/admin")({
+ head: () =>
+   pageHead({
+     path: "/admin",
+     title: "Administration — New Hope Orphanage",
+     description:
+       "Tableau de bord d'administration de New Hope Orphanage : suivi des dons, messages de contact, gestion des utilisateurs et invitations d'administrateurs.",
+   }),
  component: AdminApp,
 });
+
 
 type TabKey = "overview" | "donations" | "messages" | "users" | "invites" | "settings";
 
