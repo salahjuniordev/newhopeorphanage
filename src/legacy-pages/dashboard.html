@@ -10,21 +10,21 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root {
- --gold: #f19100;
- --gold-light: #ffc84a;
- --gold-dark: #c97200;
- --cream: #fdf8f0;
+ --gold: #FF6D00;
+ --gold-light: #FF9A3D;
+ --gold-dark: #E55F00;
+ --cream: #F8F8F8;
  --sidebar: #1e1205;
- --sidebar2: #2c1a00;
- --dark: #1a1208;
- --text: #3d2e0e;
- --muted: #8a7050;
+ --sidebar2: #020D19;
+ --dark: #020D19;
+ --text: #020D19;
+ --muted: #828282;
  --white: #ffffff;
  --success: #3db07a;
  --danger: #e05252;
  --info: #3b82f6;
  --card-bg: #ffffff;
- --border: #ede7da;
+ --border: #EFEFEF;
  }
 
  * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -121,7 +121,7 @@
 
 .nav-item.active {
  color: var(--gold-light);
- background: rgba(241,145,0,0.12);
+ background: rgba(255,109,0,0.12);
  border-left-color: var(--gold);
  }
 
@@ -228,11 +228,11 @@
  font-size: 0.88rem;
  font-weight: 600;
  cursor: pointer;
- box-shadow: 0 4px 14px rgba(241,145,0,0.4);
+ box-shadow: 0 4px 14px rgba(255,109,0,0.4);
  transition: all 0.3s;
  }
 
-.btn-donate-now:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(241,145,0,0.5); }
+.btn-donate-now:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255,109,0,0.5); }
 
 .notif-btn {
  width: 38px; height: 38px;
@@ -409,7 +409,7 @@
  }
 
 .badge-pill.success { background: #e6f9f1; color: var(--success); }
-.badge-pill.pending { background: #fff8e1; color: #c97200; }
+.badge-pill.pending { background: #fff8e1; color: #E55F00; }
 .badge-pill.failed { background: #fef0f0; color: var(--danger); }
 
  /* ── Donate form ── */
@@ -475,7 +475,7 @@
 
 .form-field input:focus,.form-field select:focus,.form-field textarea:focus {
  border-color: var(--gold);
- box-shadow: 0 0 0 3px rgba(241,145,0,0.15);
+ box-shadow: 0 0 0 3px rgba(255,109,0,0.15);
  }
 
 .form-field textarea { min-height: 80px; resize: vertical; }
@@ -515,12 +515,12 @@
  font-size: 1rem;
  font-weight: 600;
  cursor: pointer;
- box-shadow: 0 6px 20px rgba(241,145,0,0.4);
+ box-shadow: 0 6px 20px rgba(255,109,0,0.4);
  transition: all 0.3s;
  margin-top: 8px;
  }
 
-.btn-submit-donate:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(241,145,0,0.5); }
+.btn-submit-donate:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(255,109,0,0.5); }
 
  /* ── Impact page ── */
 .impact-grid {
@@ -635,13 +635,13 @@
  }
 
 .p-badge {
- background: rgba(241,145,0,0.25);
+ background: rgba(255,109,0,0.25);
  color: var(--gold-light);
  padding: 4px 12px;
  border-radius: 20px;
  font-size: 0.75rem;
  font-weight: 600;
- border: 1px solid rgba(241,145,0,0.3);
+ border: 1px solid rgba(255,109,0,0.3);
  }
 
  /* ── Toast ── */
@@ -1155,11 +1155,11 @@
  datasets: [{
  label: 'FCFA Donated',
  data,
- backgroundColor: 'rgba(241,145,0,0.15)',
- borderColor: '#f19100',
+ backgroundColor: 'rgba(255,109,0,0.15)',
+ borderColor: '#FF6D00',
  borderWidth: 2,
  borderRadius: 8,
- hoverBackgroundColor: 'rgba(241,145,0,0.3)'
+ hoverBackgroundColor: 'rgba(255,109,0,0.3)'
  }]
  },
  options: {
@@ -1185,7 +1185,7 @@
  labels: Object.keys(cats),
  datasets: [{
  data: Object.values(cats),
- backgroundColor: ['#f19100','#ffc84a','#3db07a','#3b82f6','#e05252','#a855f7'],
+ backgroundColor: ['#FF6D00','#FF9A3D','#3db07a','#3b82f6','#e05252','#a855f7'],
  borderWidth: 3,
  borderColor: '#fff'
  }]

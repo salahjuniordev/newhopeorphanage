@@ -37,7 +37,7 @@ const PLACEHOLDER_STYLE = `
 /* Active nav link */
 .main-menu .navbar-nav > li.nho-active > .nav-link,
 .slicknav_nav > li.nho-active > a{
-  color:#f7941e !important;
+  color:#FF6D00 !important;
 }
 /* Make sure logo image always has a reserved box so missing logo still
    keeps header layout */
