@@ -248,8 +248,8 @@ button{padding:10px 24px;background:#FF6D00;color:#fff;border:0;border-radius:8p
 
   // ---------- Post-submission status screen ----------
   if (tx) {
-    const isApproved = tx.status === "approved" || tx.status === "success";
-    const isRejected = tx.status === "rejected" || tx.status === "failed";
+    const isApproved = ["approved", "success", "successful", "completed", "paid"].includes(tx.status);
+    const isRejected = ["rejected", "failed", "cancelled", "canceled", "expired"].includes(tx.status);
     return (
       <div className="nho-donate-wrap">
         <style>{DONATE_CSS}</style>
