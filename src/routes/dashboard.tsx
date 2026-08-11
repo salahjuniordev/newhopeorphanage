@@ -107,7 +107,11 @@ function Dashboard() {
  };
 
  if (!session) return null;
- const total = donations.reduce((acc, d) => acc + Number(d.amount), 0);
+  // Only confirmed payments count toward the total given.
+  const CONFIRMED_STATUSES = ["completed", "approved", "success", "successful", "paid"];
+  const total = donations
+  .filter((d) => CONFIRMED_STATUSES.includes(String(d.status || "").toLowerCase()))
+  .reduce((acc, d) => acc + Number(d.amount), 0);
  const firstName = profile?.full_name?.split(" ")[0]?? session.user.email?.split("@")[0]?? "Friend";
  const initial = (profile?.full_name?? session.user.email?? "?").charAt(0).toUpperCase();
 
