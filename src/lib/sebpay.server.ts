@@ -19,8 +19,28 @@ export function getSebpayKeys() {
   return { publicKey, secretKey };
 }
 
+/**
+ * Callback URL must live on the SAME domain SebPay verified for this platform.
+ * Priority: explicit SITE_URL/PUBLIC_SITE_URL env (set this to the verified
+ * production domain), then the incoming request's own origin, then a fallback.
+ */
 export function getSebpayCallbackUrl() {
-  const origin = process.env['SITE_URL'] ?? process.env['PUBLIC_SITE_URL'] ?? "https://newhopeorphanage.lovable.app";
+  const configured = process.env['SITE_URL'] ?? process.env['PUBLIC_SITE_URL'] ?? "";
+  let origin = configured.trim();
+
+  if (!origin) {
+    try {
+      const proto = (getRequestHeader("x-forwarded-proto") ?? "https").split(",")[0]!.trim();
+      const host =
+        (getRequestHeader("x-forwarded-host") ?? getRequestHeader("host") ?? "").split(",")[0]!.trim();
+      if (host) origin = `${proto}://${host}`;
+    } catch {
+      /* no request context */
+    }
+  }
+  if (!origin) origin = "https://newhopeorphanage.lovable.app";
+  if (!/^https?:\/\//.test(origin)) origin = `https://${origin}`;
+
   return `${origin.replace(/\/$/, "")}/api/public/webhooks/sebpay`;
 }
 
