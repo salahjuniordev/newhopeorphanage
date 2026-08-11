@@ -59,7 +59,7 @@ html{scroll-behavior:smooth;scroll-padding-top:84px}
 }
 .nho-menu li a:hover{background:rgba(255,109,0,.1);color:#FF6D00}
 
-.nho-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.nho-actions{display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:auto}
 
 .nho-lang{
   display:inline-flex;align-items:center;gap:2px;padding:4px;
