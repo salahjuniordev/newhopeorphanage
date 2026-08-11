@@ -118,10 +118,12 @@ function DonationPage() {
 
   // Poll status while pending
   useEffect(() => {
-    if (!tx || tx.status === "approved" || tx.status === "rejected") {
+    const TERMINAL = ["approved", "success", "successful", "completed", "paid", "rejected", "failed", "cancelled", "canceled", "expired"];
+    if (!tx || TERMINAL.includes(tx.status)) {
       if (pollRef.current) { window.clearInterval(pollRef.current); pollRef.current = null; }
       return;
     }
+
     if (pollRef.current) return;
     pollRef.current = window.setInterval(async () => {
       try {
