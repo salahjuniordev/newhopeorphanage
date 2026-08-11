@@ -59,7 +59,7 @@ html{scroll-behavior:smooth;scroll-padding-top:84px}
 }
 .nho-menu li a:hover{background:rgba(255,109,0,.1);color:#FF6D00}
 
-.nho-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.nho-actions{display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:auto}
 
 .nho-lang{
   display:inline-flex;align-items:center;gap:2px;padding:4px;
@@ -118,8 +118,9 @@ html{scroll-behavior:smooth;scroll-padding-top:84px}
   .nho-btn-cta{display:none}
 }
 @media (max-width: 560px){
-  .nho-nav-inner{padding:10px 16px;gap:12px}
-  .nho-brand img{height:64px}
+  .nho-nav-inner{padding:8px 14px;gap:10px}
+  .nho-brand img{height:56px}
+  .nho-lang button{padding:6px 10px}
 }
 
 /* Hide legacy decorative floating stickers/badges site-wide */
