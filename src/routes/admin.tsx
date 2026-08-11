@@ -374,12 +374,12 @@ function OverviewTab({ stats, recent, range, setRange, setPreset }: {
  <button className="adm-btn adm-btn-ghost" onClick={() => setPreset(365)}>1y</button>
  </div>
  </div>
- <div className="adm-kpis">
- <Kpi label="Total Raised" value={`$${stats.total.toLocaleString()}`} tone="primary" hint={`across ${stats.donationCount} donations`} />
- <Kpi label="Donations" value={stats.donationCount.toString()} tone="ok" />
- <Kpi label="Registered Users" value={stats.userCount.toString()} tone="info" />
- <Kpi label="Contact Messages" value={stats.messageCount.toString()} tone="warn" hint={`${stats.pendingInvites} open invites`} />
- </div>
+  <div className="adm-kpis">
+  <Kpi label="Total Raised (confirmed)" value={`$${stats.total.toLocaleString()}`} tone="primary" hint={`across ${stats.donationCount} confirmed donations`} />
+  <Kpi label="Confirmed Donations" value={stats.donationCount.toString()} tone="ok" hint={`${stats.pendingCount} pending · ${stats.failedCount} failed (not counted)`} />
+  <Kpi label="Registered Users" value={stats.userCount.toString()} tone="info" />
+  <Kpi label="Contact Messages" value={stats.messageCount.toString()} tone="warn" hint={`${stats.pendingInvites} open invites`} />
+  </div>
 
  <div className="adm-grid-2">
  <div className="adm-card">
