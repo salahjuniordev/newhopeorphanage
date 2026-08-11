@@ -345,13 +345,14 @@ function AdminApp() {
 /* -------------------- Tabs -------------------- */
 
 function OverviewTab({ stats, recent, range, setRange, setPreset }: {
- stats: {
- total: number; donationCount: number; messageCount: number; userCount: number;
- days: { date: string; amount: number }[];
- causes: { name: string; value: number }[];
- currencies: { name: string; value: number }[];
- pendingInvites: number;
- };
+  stats: {
+  total: number; donationCount: number; messageCount: number; userCount: number;
+  pendingCount: number; failedCount: number;
+  days: { date: string; amount: number }[];
+  causes: { name: string; value: number }[];
+  currencies: { name: string; value: number }[];
+  pendingInvites: number;
+  };
  recent: DonationRow[];
  range: { from: string; to: string };
  setRange: (r: { from: string; to: string }) => void;
