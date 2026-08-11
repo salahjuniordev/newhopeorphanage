@@ -4,24 +4,47 @@ import { createHmac, timingSafeEqual } from "crypto";
 export const Route = createFileRoute("/api/public/webhooks/sebpay")({
   server: {
     handlers: {
+      // SebPay (and their verification tooling) pings the callback URL before
+      // enabling live transactions — answer 200 so the URL validates.
+      GET: async () =>
+        new Response(JSON.stringify({ ok: true, endpoint: "sebpay-webhook" }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      OPTIONS: async () =>
+        new Response(null, {
+          status: 204,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, X-Sebpay-Signature",
+          },
+        }),
       POST: async ({ request }) => {
         const raw = await request.text();
         const secret = process.env.SEBPAY_SECRET_KEY ?? "";
+        const webhookSecret = process.env.SEBPAY_WEBHOOK_SECRET ?? secret;
 
         if (!secret || !secret.startsWith("sk_live_")) {
           console.error("[sebpay webhook] live secret is unavailable");
           return new Response("Payment webhook unavailable", { status: 503 });
         }
 
-        const signature = request.headers.get("x-sebpay-signature") ?? "";
+        const signature =
+          request.headers.get("x-sebpay-signature") ??
+          request.headers.get("x-signature") ??
+          request.headers.get("sebpay-signature") ??
+          "";
         if (signature) {
-          const expected = createHmac("sha256", secret).update(raw).digest("hex");
-          const a = Buffer.from(signature, "utf8");
+          const expected = createHmac("sha256", webhookSecret).update(raw).digest("hex");
+          const a = Buffer.from(signature.replace(/^sha256=/, "").trim(), "utf8");
           const b = Buffer.from(expected, "utf8");
           if (a.length !== b.length || !timingSafeEqual(a, b)) {
+            console.error("[sebpay webhook] signature mismatch");
             return new Response("Invalid signature", { status: 401 });
           }
         }
+
 
         let payload: {
           transaction_id?: string;

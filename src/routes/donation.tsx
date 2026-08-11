@@ -118,10 +118,12 @@ function DonationPage() {
 
   // Poll status while pending
   useEffect(() => {
-    if (!tx || tx.status === "approved" || tx.status === "rejected") {
+    const TERMINAL = ["approved", "success", "successful", "completed", "paid", "rejected", "failed", "cancelled", "canceled", "expired"];
+    if (!tx || TERMINAL.includes(tx.status)) {
       if (pollRef.current) { window.clearInterval(pollRef.current); pollRef.current = null; }
       return;
     }
+
     if (pollRef.current) return;
     pollRef.current = window.setInterval(async () => {
       try {
@@ -246,8 +248,8 @@ button{padding:10px 24px;background:#FF6D00;color:#fff;border:0;border-radius:8p
 
   // ---------- Post-submission status screen ----------
   if (tx) {
-    const isApproved = tx.status === "approved" || tx.status === "success";
-    const isRejected = tx.status === "rejected" || tx.status === "failed";
+    const isApproved = ["approved", "success", "successful", "completed", "paid"].includes(tx.status);
+    const isRejected = ["rejected", "failed", "cancelled", "canceled", "expired"].includes(tx.status);
     return (
       <div className="nho-donate-wrap">
         <style>{DONATE_CSS}</style>
