@@ -141,49 +141,58 @@ function AdminApp() {
  setRange({ from: from.toISOString().slice(0, 10), to: to.toISOString().slice(0, 10) });
  };
 
- // --- Derived stats (filtered by date range) ---
- const stats = useMemo(() => {
- const fromMs = new Date(range.from + "T00:00:00").getTime();
- const toMs = new Date(range.to + "T23:59:59").getTime();
- const inRange = donations.filter((d) => {
- const t = new Date(d.created_at).getTime();
- return t >= fromMs && t <= toMs;
- });
+  // --- Derived stats (filtered by date range) ---
+  // Only confirmed/settled payments count toward money figures. Pending or failed
+  // transactions must never inflate the dashboard.
+  const CONFIRMED = new Set(["completed", "approved", "success", "successful", "paid"]);
+  const stats = useMemo(() => {
+  const fromMs = new Date(range.from + "T00:00:00").getTime();
+  const toMs = new Date(range.to + "T23:59:59").getTime();
+  const inRangeAll = donations.filter((d) => {
+  const t = new Date(d.created_at).getTime();
+  return t >= fromMs && t <= toMs;
+  });
+  const inRange = inRangeAll.filter((d) => CONFIRMED.has(String(d.status || "").toLowerCase()));
 
- const total = inRange.reduce((s, d) => s + Number(d.amount || 0), 0);
- const byDay = new Map<string, number>();
- for (const d of inRange) {
- const day = new Date(d.created_at).toISOString().slice(0, 10);
- byDay.set(day, (byDay.get(day)?? 0) + Number(d.amount || 0));
- }
- // Fill gaps for a continuous line
- const days: { date: string; amount: number }[] = [];
- for (let t = fromMs; t <= toMs; t += 86400000) {
- const iso = new Date(t).toISOString().slice(0, 10);
- days.push({ date: iso.slice(5), amount: Math.round(byDay.get(iso)?? 0) });
- }
+  const total = inRange.reduce((s, d) => s + Number(d.amount || 0), 0);
+  const byDay = new Map<string, number>();
+  for (const d of inRange) {
+  const day = new Date(d.created_at).toISOString().slice(0, 10);
+  byDay.set(day, (byDay.get(day)?? 0) + Number(d.amount || 0));
+  }
+  // Fill gaps for a continuous line
+  const days: { date: string; amount: number }[] = [];
+  for (let t = fromMs; t <= toMs; t += 86400000) {
+  const iso = new Date(t).toISOString().slice(0, 10);
+  days.push({ date: iso.slice(5), amount: Math.round(byDay.get(iso)?? 0) });
+  }
 
- const byCause = new Map<string, number>();
- for (const d of inRange) {
- const c = d.cause || "General";
- byCause.set(c, (byCause.get(c)?? 0) + Number(d.amount || 0));
- }
- const causes = [...byCause.entries()].map(([name, value]) => ({ name, value: Math.round(value) }));
+  const byCause = new Map<string, number>();
+  for (const d of inRange) {
+  const c = d.cause || "General";
+  byCause.set(c, (byCause.get(c)?? 0) + Number(d.amount || 0));
+  }
+  const causes = [...byCause.entries()].map(([name, value]) => ({ name, value: Math.round(value) }));
 
- const byCurrency = new Map<string, number>();
- for (const d of inRange) {
- byCurrency.set(d.currency, (byCurrency.get(d.currency)?? 0) + Number(d.amount || 0));
- }
- const currencies = [...byCurrency.entries()].map(([name, value]) => ({ name, value: Math.round(value) }));
+  const byCurrency = new Map<string, number>();
+  for (const d of inRange) {
+  byCurrency.set(d.currency, (byCurrency.get(d.currency)?? 0) + Number(d.amount || 0));
+  }
+  const currencies = [...byCurrency.entries()].map(([name, value]) => ({ name, value: Math.round(value) }));
 
- return {
- total, days, causes, currencies,
- donationCount: inRange.length,
- messageCount: messages.length,
- userCount: users.length,
- pendingInvites: invitations.filter((i) =>!i.accepted_at).length,
- };
- }, [donations, messages, users, invitations, range]);
+  const pendingCount = inRangeAll.filter((d) => String(d.status || "").toLowerCase() === "pending").length;
+  const failedCount = inRangeAll.length - inRange.length - pendingCount;
+
+  return {
+  total, days, causes, currencies,
+  donationCount: inRange.length,
+  pendingCount, failedCount,
+  messageCount: messages.length,
+  userCount: users.length,
+  pendingInvites: invitations.filter((i) =>!i.accepted_at).length,
+  };
+  }, [donations, messages, users, invitations, range]);
+
 
  // --- Handlers ---
  const handleClaim = async () => {
@@ -336,13 +345,14 @@ function AdminApp() {
 /* -------------------- Tabs -------------------- */
 
 function OverviewTab({ stats, recent, range, setRange, setPreset }: {
- stats: {
- total: number; donationCount: number; messageCount: number; userCount: number;
- days: { date: string; amount: number }[];
- causes: { name: string; value: number }[];
- currencies: { name: string; value: number }[];
- pendingInvites: number;
- };
+  stats: {
+  total: number; donationCount: number; messageCount: number; userCount: number;
+  pendingCount: number; failedCount: number;
+  days: { date: string; amount: number }[];
+  causes: { name: string; value: number }[];
+  currencies: { name: string; value: number }[];
+  pendingInvites: number;
+  };
  recent: DonationRow[];
  range: { from: string; to: string };
  setRange: (r: { from: string; to: string }) => void;
@@ -364,12 +374,12 @@ function OverviewTab({ stats, recent, range, setRange, setPreset }: {
  <button className="adm-btn adm-btn-ghost" onClick={() => setPreset(365)}>1y</button>
  </div>
  </div>
- <div className="adm-kpis">
- <Kpi label="Total Raised" value={`$${stats.total.toLocaleString()}`} tone="primary" hint={`across ${stats.donationCount} donations`} />
- <Kpi label="Donations" value={stats.donationCount.toString()} tone="ok" />
- <Kpi label="Registered Users" value={stats.userCount.toString()} tone="info" />
- <Kpi label="Contact Messages" value={stats.messageCount.toString()} tone="warn" hint={`${stats.pendingInvites} open invites`} />
- </div>
+  <div className="adm-kpis">
+  <Kpi label="Total Raised (confirmed)" value={`$${stats.total.toLocaleString()}`} tone="primary" hint={`across ${stats.donationCount} confirmed donations`} />
+  <Kpi label="Confirmed Donations" value={stats.donationCount.toString()} tone="ok" hint={`${stats.pendingCount} pending · ${stats.failedCount} failed (not counted)`} />
+  <Kpi label="Registered Users" value={stats.userCount.toString()} tone="info" />
+  <Kpi label="Contact Messages" value={stats.messageCount.toString()} tone="warn" hint={`${stats.pendingInvites} open invites`} />
+  </div>
 
  <div className="adm-grid-2">
  <div className="adm-card">
