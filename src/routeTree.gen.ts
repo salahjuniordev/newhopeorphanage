@@ -13,6 +13,7 @@ import { Route as VideoGalleryRouteImport } from './routes/video-gallery'
 import { Route as TeamSingleRouteImport } from './routes/team-single'
 import { Route as TeamRouteImport } from './routes/team'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ImageGalleryRouteImport } from './routes/image-gallery'
 import { Route as FaqsRouteImport } from './routes/faqs'
 import { Route as DonationRouteImport } from './routes/donation'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -40,6 +41,11 @@ const TeamRoute = TeamRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImageGalleryRoute = ImageGalleryRouteImport.update({
+  id: '/image-gallery',
+  path: '/image-gallery',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqsRoute = FaqsRouteImport.update({
@@ -91,6 +97,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/donation': typeof DonationRoute
   '/faqs': typeof FaqsRoute
+  '/image-gallery': typeof ImageGalleryRoute
   '/login': typeof LoginRoute
   '/team': typeof TeamRoute
   '/team-single': typeof TeamSingleRoute
@@ -105,6 +112,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/donation': typeof DonationRoute
   '/faqs': typeof FaqsRoute
+  '/image-gallery': typeof ImageGalleryRoute
   '/login': typeof LoginRoute
   '/team': typeof TeamRoute
   '/team-single': typeof TeamSingleRoute
@@ -120,6 +128,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/donation': typeof DonationRoute
   '/faqs': typeof FaqsRoute
+  '/image-gallery': typeof ImageGalleryRoute
   '/login': typeof LoginRoute
   '/team': typeof TeamRoute
   '/team-single': typeof TeamSingleRoute
@@ -136,6 +145,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/donation'
     | '/faqs'
+    | '/image-gallery'
     | '/login'
     | '/team'
     | '/team-single'
@@ -150,6 +160,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/donation'
     | '/faqs'
+    | '/image-gallery'
     | '/login'
     | '/team'
     | '/team-single'
@@ -164,6 +175,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/donation'
     | '/faqs'
+    | '/image-gallery'
     | '/login'
     | '/team'
     | '/team-single'
@@ -179,6 +191,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   DonationRoute: typeof DonationRoute
   FaqsRoute: typeof FaqsRoute
+  ImageGalleryRoute: typeof ImageGalleryRoute
   LoginRoute: typeof LoginRoute
   TeamRoute: typeof TeamRoute
   TeamSingleRoute: typeof TeamSingleRoute
@@ -214,6 +227,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/image-gallery': {
+      id: '/image-gallery'
+      path: '/image-gallery'
+      fullPath: '/image-gallery'
+      preLoaderRoute: typeof ImageGalleryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faqs': {
@@ -283,6 +303,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   DonationRoute: DonationRoute,
   FaqsRoute: FaqsRoute,
+  ImageGalleryRoute: ImageGalleryRoute,
   LoginRoute: LoginRoute,
   TeamRoute: TeamRoute,
   TeamSingleRoute: TeamSingleRoute,
