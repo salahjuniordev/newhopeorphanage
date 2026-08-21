@@ -13,6 +13,7 @@ import navCss from "../components/site-navbar.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteNavbar } from "../components/SiteNavbar";
 import { BottomNav } from "../components/BottomNav";
+import { SiteFooter } from "../components/SiteFooter";
 import { I18nProvider } from "../lib/i18n";
 import {
   organizationSchema,
@@ -171,6 +172,7 @@ function RootComponent() {
       <I18nProvider>
         <SiteNavbar />
         <Outlet />
+        <SiteFooter />
         <BottomNav />
       </I18nProvider>
     </QueryClientProvider>
