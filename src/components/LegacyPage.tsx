@@ -72,6 +72,24 @@ export function LegacyPage({ html }: LegacyPageProps) {
     const root = ref.current;
     if (!root) return;
 
+    // ---- SPA link interception ----
+    const onClick = (ev: Event) => {
+      const a = (ev.target as HTMLElement).closest("a") as HTMLAnchorElement | null;
+      if (!a) return;
+      const href = a.getAttribute("href");
+      if (!href || href.startsWith("http") || href.startsWith("mailto:") || href.startsWith("tel:") || href.startsWith("#")) return;
+      // Only intercept links that point to known SPA routes
+      const knownRoutes = ["/", "/about-us", "/contact", "/donation", "/faqs", "/team", "/team-single", "/image-gallery", "/video-gallery", "/login", "/dashboard", "/admin"];
+      const path = href.split("?")[0].split("#")[0];
+      if (knownRoutes.includes(path) || path.startsWith("/blog-")) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        // Use window.location to trigger SPA-compatible navigation
+        window.location.href = href;
+      }
+    };
+    root.addEventListener("click", onClick);
+
     // ---- Active nav link state ----
     const active = activeHrefFor(pathname);
     if (active) {
@@ -295,6 +313,7 @@ export function LegacyPage({ html }: LegacyPageProps) {
     return () => {
       root.removeEventListener("error", onError, true);
       root.removeEventListener("submit", onSubmit);
+      root.removeEventListener("click", onClick);
     };
   }, [body, pathname, mounted]);
 

@@ -18,6 +18,10 @@ import { Route as FaqsRouteImport } from './routes/faqs'
 import { Route as DonationRouteImport } from './routes/donation'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as BlogVieNewHopeRouteImport } from './routes/blog-vie-new-hope'
+import { Route as BlogOrientationProfessionnelleRouteImport } from './routes/blog-orientation-professionnelle'
+import { Route as BlogDeveloppementCompetencesRouteImport } from './routes/blog-developpement-competences'
+import { Route as BlogCollecteDeFondsRouteImport } from './routes/blog-collecte-de-fonds'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutUsRouteImport } from './routes/about-us'
 import { Route as IndexRouteImport } from './routes/index'
@@ -68,6 +72,28 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogVieNewHopeRoute = BlogVieNewHopeRouteImport.update({
+  id: '/blog-vie-new-hope',
+  path: '/blog-vie-new-hope',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogOrientationProfessionnelleRoute =
+  BlogOrientationProfessionnelleRouteImport.update({
+    id: '/blog-orientation-professionnelle',
+    path: '/blog-orientation-professionnelle',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const BlogDeveloppementCompetencesRoute =
+  BlogDeveloppementCompetencesRouteImport.update({
+    id: '/blog-developpement-competences',
+    path: '/blog-developpement-competences',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const BlogCollecteDeFondsRoute = BlogCollecteDeFondsRouteImport.update({
+  id: '/blog-collecte-de-fonds',
+  path: '/blog-collecte-de-fonds',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -93,6 +119,10 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about-us': typeof AboutUsRoute
   '/admin': typeof AdminRoute
+  '/blog-collecte-de-fonds': typeof BlogCollecteDeFondsRoute
+  '/blog-developpement-competences': typeof BlogDeveloppementCompetencesRoute
+  '/blog-orientation-professionnelle': typeof BlogOrientationProfessionnelleRoute
+  '/blog-vie-new-hope': typeof BlogVieNewHopeRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
   '/donation': typeof DonationRoute
@@ -108,6 +138,10 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about-us': typeof AboutUsRoute
   '/admin': typeof AdminRoute
+  '/blog-collecte-de-fonds': typeof BlogCollecteDeFondsRoute
+  '/blog-developpement-competences': typeof BlogDeveloppementCompetencesRoute
+  '/blog-orientation-professionnelle': typeof BlogOrientationProfessionnelleRoute
+  '/blog-vie-new-hope': typeof BlogVieNewHopeRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
   '/donation': typeof DonationRoute
@@ -124,6 +158,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about-us': typeof AboutUsRoute
   '/admin': typeof AdminRoute
+  '/blog-collecte-de-fonds': typeof BlogCollecteDeFondsRoute
+  '/blog-developpement-competences': typeof BlogDeveloppementCompetencesRoute
+  '/blog-orientation-professionnelle': typeof BlogOrientationProfessionnelleRoute
+  '/blog-vie-new-hope': typeof BlogVieNewHopeRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
   '/donation': typeof DonationRoute
@@ -141,6 +179,10 @@ export interface FileRouteTypes {
     | '/'
     | '/about-us'
     | '/admin'
+    | '/blog-collecte-de-fonds'
+    | '/blog-developpement-competences'
+    | '/blog-orientation-professionnelle'
+    | '/blog-vie-new-hope'
     | '/contact'
     | '/dashboard'
     | '/donation'
@@ -156,6 +198,10 @@ export interface FileRouteTypes {
     | '/'
     | '/about-us'
     | '/admin'
+    | '/blog-collecte-de-fonds'
+    | '/blog-developpement-competences'
+    | '/blog-orientation-professionnelle'
+    | '/blog-vie-new-hope'
     | '/contact'
     | '/dashboard'
     | '/donation'
@@ -171,6 +217,10 @@ export interface FileRouteTypes {
     | '/'
     | '/about-us'
     | '/admin'
+    | '/blog-collecte-de-fonds'
+    | '/blog-developpement-competences'
+    | '/blog-orientation-professionnelle'
+    | '/blog-vie-new-hope'
     | '/contact'
     | '/dashboard'
     | '/donation'
@@ -187,6 +237,10 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutUsRoute: typeof AboutUsRoute
   AdminRoute: typeof AdminRoute
+  BlogCollecteDeFondsRoute: typeof BlogCollecteDeFondsRoute
+  BlogDeveloppementCompetencesRoute: typeof BlogDeveloppementCompetencesRoute
+  BlogOrientationProfessionnelleRoute: typeof BlogOrientationProfessionnelleRoute
+  BlogVieNewHopeRoute: typeof BlogVieNewHopeRoute
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRoute
   DonationRoute: typeof DonationRoute
@@ -264,6 +318,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog-vie-new-hope': {
+      id: '/blog-vie-new-hope'
+      path: '/blog-vie-new-hope'
+      fullPath: '/blog-vie-new-hope'
+      preLoaderRoute: typeof BlogVieNewHopeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog-orientation-professionnelle': {
+      id: '/blog-orientation-professionnelle'
+      path: '/blog-orientation-professionnelle'
+      fullPath: '/blog-orientation-professionnelle'
+      preLoaderRoute: typeof BlogOrientationProfessionnelleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog-developpement-competences': {
+      id: '/blog-developpement-competences'
+      path: '/blog-developpement-competences'
+      fullPath: '/blog-developpement-competences'
+      preLoaderRoute: typeof BlogDeveloppementCompetencesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog-collecte-de-fonds': {
+      id: '/blog-collecte-de-fonds'
+      path: '/blog-collecte-de-fonds'
+      fullPath: '/blog-collecte-de-fonds'
+      preLoaderRoute: typeof BlogCollecteDeFondsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -299,6 +381,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutUsRoute: AboutUsRoute,
   AdminRoute: AdminRoute,
+  BlogCollecteDeFondsRoute: BlogCollecteDeFondsRoute,
+  BlogDeveloppementCompetencesRoute: BlogDeveloppementCompetencesRoute,
+  BlogOrientationProfessionnelleRoute: BlogOrientationProfessionnelleRoute,
+  BlogVieNewHopeRoute: BlogVieNewHopeRoute,
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRoute,
   DonationRoute: DonationRoute,
