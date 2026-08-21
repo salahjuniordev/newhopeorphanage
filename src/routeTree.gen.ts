@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VideoGalleryRouteImport } from './routes/video-gallery'
-import { Route as AboutUsRouteImport } from './routes/about-us'
 import { Route as TeamSingleRouteImport } from './routes/team-single'
 import { Route as TeamRouteImport } from './routes/team'
 import { Route as LoginRouteImport } from './routes/login'
@@ -19,17 +18,13 @@ import { Route as DonationRouteImport } from './routes/donation'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AboutUsRouteImport } from './routes/about-us'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiPublicWebhooksSebpayRouteImport } from './routes/api/public/webhooks/sebpay'
 
 const VideoGalleryRoute = VideoGalleryRouteImport.update({
   id: '/video-gallery',
   path: '/video-gallery',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutUsRoute = AboutUsRouteImport.update({
-  id: '/about-us',
-  path: '/about-us',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TeamSingleRoute = TeamSingleRouteImport.update({
@@ -70,6 +65,11 @@ const ContactRoute = ContactRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutUsRoute = AboutUsRouteImport.update({
+  id: '/about-us',
+  path: '/about-us',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -292,3 +292,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

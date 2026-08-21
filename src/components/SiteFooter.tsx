@@ -129,8 +129,7 @@ export function SiteFooter() {
             <div className="col-md-12">
               <div className="copyright-text">
                 <p style={{ fontSize: "larger" }}>
-                  Copyright © {new Date().getFullYear()} New Hope Orphanage All
-                  Rights Reserved.
+                  {`Copyright © ${new Date().getFullYear()} New Hope Orphanage All Rights Reserved.`}
                 </p>
               </div>
             </div>
