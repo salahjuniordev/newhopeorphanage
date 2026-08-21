@@ -24,6 +24,11 @@ export const NAV_DICT: Dict = {
   dashboard: { en: "Dashboard", fr: "Tableau de bord" },
   needHelp: { en: "Need help!", fr: "Besoin d'aide !" },
   language: { en: "Language", fr: "Langue" },
+  blogCtaTitle: { en: "Support Our Mission", fr: "Soutenir notre mission" },
+  blogCtaDesc: { en: "Your contribution helps children at New Hope Orphanage receive the education, care, and opportunities they need to build a better future.", fr: "Votre contribution aide les enfants de New Hope Orphanage à recevoir l'éducation, les soins et les opportunités dont ils ont besoin pour construire un avenir meilleur." },
+  blogCtaDonate: { en: "Donate Now", fr: "Faire un don" },
+  blogCtaContact: { en: "Contact Us", fr: "Contactez-nous" },
+  blogBack: { en: "Back to Home", fr: "Retour à l'accueil" },
 };
 
 interface I18nCtx {
