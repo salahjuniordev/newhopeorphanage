@@ -38,7 +38,7 @@ export function getSebpayCallbackUrl() {
       /* no request context */
     }
   }
-  if (!origin) origin = "https://newhopeorphanage.lovable.app";
+  if (!origin) origin = "https://newhopeorphanage.org";
   if (!/^https?:\/\//.test(origin)) origin = `https://${origin}`;
 
   return `${origin.replace(/\/$/, "")}/api/public/webhooks/sebpay`;

@@ -113,6 +113,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:site_name", content: "New Hope Orphanage" },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:type", content: "website" },
+      { name: "google-site-verification", content: "ndgewlMN02w4aQLdOi3YKONQ_wgRKkudWACZym4TmKc" },
     ],
     links: [
       { rel: "icon", type: "image/png", href: "/nho-logo.png" },
