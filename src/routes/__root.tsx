@@ -103,7 +103,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content: "width=device-width, initial-scale=1.0, maximum-scale=1",
       },
       { title: "New Hope Orphanage" },
-      { name: "description", content: "New Hope Orphanage — Yaoundé, Cameroun." },
+      { name: "description", content: "New Hope Orphanage — Yaoundé et Douala, Cameroun." },
       { name: "author", content: "New Hope Orphanage" },
       { property: "og:site_name", content: "New Hope Orphanage" },
       { name: "twitter:card", content: "summary_large_image" },

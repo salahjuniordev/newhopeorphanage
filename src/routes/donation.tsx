@@ -12,11 +12,11 @@ export const Route = createFileRoute("/donation")({
   head: () =>
     pageHead({
       path: "/donation",
-      title: "Faire un don — New Hope Orphanage",
+      title: "Faire un don — New Hope Orphanage au Cameroun",
       description:
-        "Faites un don sécurisé par Mobile Money (MTN, Orange, Moov, Wave) à New Hope Orphanage. Chaque don nourrit, soigne et scolarise un enfant à Yaoundé.",
+        "Soutenez les enfants de New Hope Orphanage à Yaoundé et Douala en faisant un don et contribuez à leur offrir de nouvelles opportunités.",
       ogTitle: "Faire un don — New Hope Orphanage",
-      ogDescription: "Votre don change une vie. Soutenez les enfants de New Hope Orphanage dès aujourd'hui.",
+      ogDescription: "Votre soutien peut changer une vie. Faites un don à New Hope Orphanage et contribuez à offrir aux enfants un avenir plein d'espoir.",
     }),
   component: DonationPage,
 });

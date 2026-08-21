@@ -10,13 +10,18 @@ import { DonationTimeline } from "@/components/DonationTimeline";
 import { pageHead } from "@/lib/page-head";
 
 export const Route = createFileRoute("/dashboard")({
- head: () =>
-   pageHead({
+ head: () => {
+   const base = pageHead({
      path: "/dashboard",
      title: "Mon espace donateur — New Hope Orphanage",
      description:
        "Consultez l'historique de vos dons, le statut de vos paiements et gérez votre profil de donateur New Hope Orphanage.",
-   }),
+   });
+   return {
+     ...base,
+     meta: [{ name: "robots", content: "noindex, nofollow" }, ...base.meta],
+   };
+ },
  component: Dashboard,
 });
 

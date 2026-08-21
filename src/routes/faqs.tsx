@@ -9,7 +9,9 @@ export const Route = createFileRoute("/faqs")({
       path: "/faqs",
       title: "Questions fréquentes — New Hope Orphanage",
       description:
-        "Réponses aux questions fréquentes sur New Hope Orphanage : utilisation des dons, parrainage d'un enfant, bénévolat et moyens de paiement mobile.",
+        "Trouvez les réponses aux questions fréquentes sur New Hope Orphanage, notre mission, les enfants, les dons et nos actions à Yaoundé et Douala.",
+      ogDescription:
+        "Toutes les réponses aux questions fréquentes sur New Hope Orphanage, notre mission et les moyens de soutenir les enfants.",
     }),
   component: () => <LegacyPage html={html} title="FAQs — New Hope Orphanage" />,
 });

@@ -7,12 +7,12 @@ export const Route = createFileRoute("/")({
   head: () =>
     pageHead({
       path: "/",
-      title: "New Hope Orphanage — Offrir un avenir aux enfants de Yaoundé",
+      title: "New Hope Orphanage — Offrir un avenir aux enfants au Cameroun",
       description:
-        "New Hope Orphanage accueille, nourrit, soigne et scolarise des enfants orphelins à Yaoundé, au Cameroun. Découvrez nos actions et soutenez-les par un don.",
+        "New Hope Orphanage accompagne des enfants à Yaoundé et Douala en leur offrant un environnement sûr, de l'éducation et un avenir plein d'espoir.",
       ogTitle: "New Hope Orphanage — Un foyer, une école, un avenir",
       ogDescription:
-        "Chaque don finance les repas, les soins et la scolarité des enfants accueillis par New Hope Orphanage à Yaoundé.",
+        "Découvrez New Hope Orphanage à Yaoundé et Douala et soutenez notre mission pour offrir aux enfants un environnement sûr, de l'éducation et un avenir meilleur.",
     }),
   component: () => <LegacyPage html={html} title="New Hope Orphanage" />,
 });

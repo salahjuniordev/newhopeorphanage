@@ -7,13 +7,18 @@ import { pageHead } from "@/lib/page-head";
 const LOGO_SRC = "/nho-logo.webp";
 
 export const Route = createFileRoute("/login")({
-  head: () =>
-    pageHead({
+  head: () => {
+    const base = pageHead({
       path: "/login",
-      title: "Connexion et inscription — New Hope Orphanage",
+      title: "Connexion — New Hope Orphanage",
       description:
         "Connectez-vous ou créez votre compte New Hope Orphanage pour faire un don, suivre l'historique de vos dons et gérer votre profil de donateur.",
-    }),
+    });
+    return {
+      ...base,
+      meta: [{ name: "robots", content: "noindex, nofollow" }, ...base.meta],
+    };
+  },
 
   component: AuthPage,
 });
