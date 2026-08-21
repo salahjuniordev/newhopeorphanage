@@ -1599,7 +1599,7 @@ header.main-header .header-sticky.active {
 
 .our-program {
     position: relative;
-    background-image: linear-gradient(180deg, transparent 80%, var(--white-color) 20%), url(../images/our-program-bg-image.jpg);
+    background-image: linear-gradient(180deg, transparent 80%, var(--white-color) 20%), url(../images/program-background.jpg);
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
@@ -1850,7 +1850,7 @@ header.main-header .header-sticky.active {
 
 .donate-now {
     position: relative;
-    background: url('../images/donate-now-bg-image.jpg') no-repeat;
+    background: url('../images/donation-background.jpg') no-repeat;
     background-position: center center;
     background-size: cover;
     padding: 150px 0;
@@ -2120,7 +2120,7 @@ header.main-header .header-sticky.active {
 /************************************/
 
 .our-testimonials {
-    background: url('../images/testimonial-bg-image.png'), var(--secondary-color);
+    background: url('../images/testimonial-background.png'), var(--secondary-color);
     background-repeat: no-repeat;
     background-position: right center;
     background-size: auto;
@@ -2746,7 +2746,7 @@ header.main-header .header-sticky.active {
 
 .page-header {
     position: relative;
-    background: url('../images/page-header-bg.jpg');
+    background: url('../images/page-header-background.jpg');
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;

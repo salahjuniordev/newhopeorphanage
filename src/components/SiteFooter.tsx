@@ -14,7 +14,7 @@ export function SiteFooter() {
                 <div className="footer-logo">
                   <Link to="/">
                     <img
-                      src="/legacy/images/new hope orphanage.svg"
+                      src="/nho-logo.webp"
                       alt="New Hope Orphanage logo"
                       height="300"
                       width="300"
