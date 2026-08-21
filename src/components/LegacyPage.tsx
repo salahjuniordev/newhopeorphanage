@@ -296,7 +296,7 @@ export function LegacyPage({ html }: LegacyPageProps) {
       root.removeEventListener("error", onError, true);
       root.removeEventListener("submit", onSubmit);
     };
-  }, [body, pathname]);
+  }, [body, pathname, mounted]);
 
   // Render a blank shell during SSR / initial hydration to avoid mismatches
   // between the server-parsed HTML and the client DOM. The legacy plugins and
