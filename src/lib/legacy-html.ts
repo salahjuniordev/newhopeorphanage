@@ -14,6 +14,7 @@ const PAGE_MAP: Record<string, string> = {
   "login.html": "/login",
   "dashboard.html": "/dashboard",
   "404.html": "/404",
+  "about-us.html": "/about-us",
 };
 
 function rewritePaths(html: string): string {
