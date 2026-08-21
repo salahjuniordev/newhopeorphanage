@@ -6513,3 +6513,163 @@ header.main-header .header-sticky.active {
         width: 16px;
     }
 }
+/* Modern Gallery Section - Coach Junior Style */
+.nho-modern-gallery {
+    padding: 80px 0;
+    background: #fff;
+}
+
+.nho-modern-gallery .section-title h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #FF6D00;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.nho-modern-gallery .section-title h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    color: #020D19;
+    margin-bottom: 15px;
+}
+
+.nho-modern-gallery .section-title p {
+    color: #6B6B6B;
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Gallery Item */
+.nho-gallery-item {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.nho-gallery-item:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 32px rgba(255, 109, 0, 0.15);
+}
+
+.nho-gallery-image {
+    position: relative;
+    aspect-ratio: 4/3;
+}
+
+.nho-gallery-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.nho-gallery-item:hover .nho-gallery-image img {
+    transform: scale(1.08);
+}
+
+/* Overlay */
+.nho-gallery-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.nho-gallery-item:hover .nho-gallery-overlay {
+    opacity: 1;
+}
+
+/* Zoom Icon */
+.nho-gallery-zoom {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 109, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 18px;
+    box-shadow: 0 4px 16px rgba(255, 109, 0, 0.4);
+    transition: transform 0.3s;
+}
+
+.nho-gallery-item:hover .nho-gallery-zoom {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+/* Info */
+.nho-gallery-info h4 {
+    color: #fff;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    margin: 0 0 4px;
+}
+
+.nho-gallery-info p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* CTA Button */
+.nho-modern-gallery .btn-default {
+    display: inline-block;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, #FF6D00, #FF9A3D);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    border-radius: 50px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(255, 109, 0, 0.3);
+}
+
+.nho-modern-gallery .btn-default:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 109, 0, 0.4);
+    background: linear-gradient(135deg, #E55F00, #FF6D00);
+    color: #fff;
+}
+
+/* Hide old gallery items */
+.d-none {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .nho-modern-gallery {
+        padding: 60px 0;
+    }
+    
+    .nho-gallery-zoom {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+    }
+    
+    .nho-gallery-info h4 {
+        font-size: 1rem;
+    }
+    
+    .nho-gallery-info p {
+        font-size: 0.78rem;
+    }
+}
