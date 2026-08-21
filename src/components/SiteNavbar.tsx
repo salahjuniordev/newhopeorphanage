@@ -80,7 +80,7 @@ export function SiteNavbar() {
 
         <nav className={`nho-links ${open ? "is-open" : ""}`} aria-label="Primary">
           <Link to="/" className={`nho-link ${pathname === "/" ? "is-active" : ""}`}>{t("home")}</Link>
-          <a href="/#about-us" onClick={goToHomeHash("#about-us")} className="nho-link">{t("about")}</a>
+          <Link to="/about-us" className={`nho-link ${isActive("/about-us") ? "is-active" : ""}`}>{t("about")}</Link>
 
           <Dropdown label={t("services")}>
             {SERVICES.map((s) => (
