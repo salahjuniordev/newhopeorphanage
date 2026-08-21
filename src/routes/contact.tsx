@@ -7,11 +7,12 @@ export const Route = createFileRoute("/contact")({
   head: () =>
     pageHead({
       path: "/contact",
-      title: "Contact — New Hope Orphanage au Cameroun",
+      title: "Contact — New Hope Orphanage in Cameroon",
       description:
-        "Contactez New Hope Orphanage à Yaoundé ou Douala pour obtenir des informations, soutenir notre mission ou en savoir plus sur nos actions.",
+        "Contact New Hope Orphanage in Yaoundé or Douala for information, to support our mission, or to learn more about our work with children.",
       ogDescription:
-        "Contactez New Hope Orphanage à Yaoundé ou Douala pour découvrir comment soutenir notre mission.",
+        "Contact New Hope Orphanage in Yaoundé or Douala to discover how to support our mission for children in Cameroon.",
+      lang: "en",
     }),
   component: () => <LegacyPage html={html} title="Contact — New Hope Orphanage" />,
 });

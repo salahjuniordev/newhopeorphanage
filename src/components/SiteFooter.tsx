@@ -24,16 +24,19 @@ export function SiteFooter() {
                 {/* Footer Logo End */}
 
                 {/* Footer Contact Detail Start */}
+                <p className="mb-4 text-sm text-muted-foreground leading-relaxed">
+                  New Hope Orphanage provides care, education, and support to orphaned children in Yaoundé and Douala, Cameroon.
+                </p>
                 <div className="footer-contact-detail">
                   <div className="footer-contact-item">
-                    <p>Contact Us Here</p>
+                    <p>Call Us</p>
                     <h3>
                       <a href="tel:+237676516652">+237 676 516 652</a>
                     </h3>
                   </div>
 
                   <div className="footer-contact-item">
-                    <p>Need live support!</p>
+                    <p>Email Us</p>
                     <h3>
                       <a href="mailto:newhopeorphanahe@gmail.com">
                         newhopeorphanahe@gmail.com
@@ -48,22 +51,22 @@ export function SiteFooter() {
                   <h3>Follow Us on</h3>
                   <ul>
                     <li>
-                      <a href="#">
+                      <a href="#" aria-label="LinkedIn">
                         <i className="fa-brands fa-linkedin"></i>
                       </a>
                     </li>
                     <li>
-                      <a href="#">
+                      <a href="#" aria-label="X (Twitter)">
                         <i className="fa-brands fa-x-twitter"></i>
                       </a>
                     </li>
                     <li>
-                      <a href="#">
+                      <a href="#" aria-label="Facebook">
                         <i className="fa-brands fa-facebook-f"></i>
                       </a>
                     </li>
                     <li>
-                      <a href="#">
+                      <a href="#" aria-label="Instagram">
                         <i className="fa-brands fa-instagram"></i>
                       </a>
                     </li>
@@ -77,7 +80,7 @@ export function SiteFooter() {
               <div className="footer-links-box">
                 {/* Footer Links Start */}
                 <div className="footer-links">
-                  <h3>Quick links</h3>
+                  <h3>Quick Links</h3>
                   <ul>
                     <li>
                       <Link to="/">Home</Link>
@@ -91,22 +94,28 @@ export function SiteFooter() {
                     <li>
                       <Link to="/contact">Contact</Link>
                     </li>
+                    <li>
+                      <Link to="/faqs">FAQs</Link>
+                    </li>
                   </ul>
                 </div>
                 {/* Footer Links End */}
 
                 {/* Footer Links Start */}
                 <div className="footer-links footer-service-links">
-                  <h3>Pages</h3>
+                  <h3>Explore</h3>
                   <ul>
+                    <li>
+                      <Link to="/team">Our Team</Link>
+                    </li>
                     <li>
                       <Link to="/video-gallery">Video Gallery</Link>
                     </li>
                     <li>
-                      <Link to="/faqs">FAQs</Link>
+                      <Link to="/image-gallery">Image Gallery</Link>
                     </li>
                     <li>
-                      <Link to="/team">Our Team</Link>
+                      <Link to="/blog-vie-new-hope">Blog</Link>
                     </li>
                     <li>
                       <Link to="/login">Sign In</Link>

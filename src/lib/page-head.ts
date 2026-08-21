@@ -1,7 +1,7 @@
-// Shared per-route <head> builder. Keeps titles/descriptions in French and
-// points every social card at the site logo card served from /public.
+// Shared per-route <head> builder. Keeps titles/descriptions in English (the
+// default rendered language) and points every social card at /og-card.jpg.
 const SITE = "https://newhopeorphanage.org";
-export const OG_IMAGE = `${SITE}/nho-logo.png`;
+export const OG_IMAGE = `${SITE}/og-card.jpg`;
 
 export interface PageHeadInput {
   path: string;

@@ -107,8 +107,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         name: "viewport",
         content: "width=device-width, initial-scale=1.0, maximum-scale=1",
       },
-      { title: "New Hope Orphanage" },
-      { name: "description", content: "New Hope Orphanage — Yaoundé et Douala, Cameroun." },
+      { title: "New Hope Orphanage — Supporting Children in Cameroon" },
+      { name: "description", content: "New Hope Orphanage provides care, education, and support to children in Yaoundé and Douala, Cameroon. Donate, volunteer, or partner with us." },
       { name: "author", content: "New Hope Orphanage" },
       { property: "og:site_name", content: "New Hope Orphanage" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -153,7 +153,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="fr">
+    <html lang="en">
       <head>
         <HeadContent />
       </head>

@@ -12,11 +12,11 @@ export const Route = createFileRoute("/donation")({
   head: () =>
     pageHead({
       path: "/donation",
-      title: "Faire un don — New Hope Orphanage au Cameroun",
+      title: "Donate — New Hope Orphanage in Cameroon",
       description:
-        "Soutenez les enfants de New Hope Orphanage à Yaoundé et Douala en faisant un don et contribuez à leur offrir de nouvelles opportunités.",
-      ogTitle: "Faire un don — New Hope Orphanage",
-      ogDescription: "Votre soutien peut changer une vie. Faites un don à New Hope Orphanage et contribuez à offrir aux enfants un avenir plein d'espoir.",
+        "Support children at New Hope Orphanage in Yaoundé and Douala, Cameroon. Your donation helps provide food, education, healthcare, and shelter.",
+      ogTitle: "Donate to New Hope Orphanage — Help Children in Cameroon",
+      ogDescription: "Your gift can change a life. Donate to New Hope Orphanage and help children in Yaoundé and Douala receive the care and opportunities they deserve.",
       lang: "en",
     }),
   component: DonationPage,

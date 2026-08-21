@@ -7,9 +7,10 @@ export const Route = createFileRoute("/team")({
   head: () =>
     pageHead({
       path: "/team",
-      title: "Notre équipe — New Hope Orphanage",
+      title: "Our Team — New Hope Orphanage in Cameroon",
       description:
-        "Rencontrez l'équipe de New Hope Orphanage : éducateurs, personnel soignant et bénévoles qui accompagnent les enfants au quotidien à Yaoundé.",
+        "Meet the educators, caregivers, and volunteers who support children every day at New Hope Orphanage in Yaoundé and Douala, Cameroon.",
+      lang: "en",
     }),
   component: () => <LegacyPage html={html} title="Team — New Hope Orphanage" />,
 });
