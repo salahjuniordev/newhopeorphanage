@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { extractLegacy } from "@/lib/legacy-html";
 import { supabase } from "@/integrations/supabase/client";
+import { sendContactEmail } from "@/lib/contact-email.functions";
 
 interface LegacyPageProps {
   html: string;
@@ -268,14 +269,23 @@ export function LegacyPage({ html }: LegacyPageProps) {
       if (btn) { btn.disabled = true; if ("innerText" in btn) btn.innerText = "Sending…"; }
       try {
         if (isContact) {
-          const { error } = await supabase.from("contact_messages").insert({
+          const payload = {
             name: get("name", "fname", "full_name", "your-name"),
             email: get("email", "your-email"),
             phone: get("phone", "tel"),
             subject: get("subject", "your-subject"),
             message: get("message", "msg", "your-message") || " ",
-          });
+          };
+          const { error } = await supabase.from("contact_messages").insert(payload);
           if (error) throw error;
+          // Notify the orphanage inbox via Resend. The message is already
+          // stored in the database, so an email failure must not lose the
+          // submission — surface a warning instead of failing the whole form.
+          try {
+            await sendContactEmail({ data: payload });
+          } catch (emailErr) {
+            console.error("[contact] email notification failed", emailErr);
+          }
         } else {
           const amountRaw = get("amount", "donation-amount", "donate-amount") || "0";
           const amount = Number(amountRaw.replace(/[^\d.]/g, "")) || 0;
