@@ -11,6 +11,15 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://newhopeorphanage.org/" />
   </url>
   <url>
+    <loc>https://newhopeorphanage.org/about-us</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://newhopeorphanage.org/about-us" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://newhopeorphanage.org/about-us" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://newhopeorphanage.org/about-us" />
+  </url>
+  <url>
     <loc>https://newhopeorphanage.org/team</loc>
     <lastmod>2026-08-21</lastmod>
     <changefreq>monthly</changefreq>
@@ -20,22 +29,13 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://newhopeorphanage.org/team" />
   </url>
   <url>
-    <loc>https://newhopeorphanage.org/video-gallery</loc>
+    <loc>https://newhopeorphanage.org/donation</loc>
     <lastmod>2026-08-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://newhopeorphanage.org/video-gallery" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://newhopeorphanage.org/video-gallery" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://newhopeorphanage.org/video-gallery" />
-  </url>
-  <url>
-    <loc>https://newhopeorphanage.org/faqs</loc>
-    <lastmod>2026-08-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://newhopeorphanage.org/faqs" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://newhopeorphanage.org/faqs" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://newhopeorphanage.org/faqs" />
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://newhopeorphanage.org/donation" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://newhopeorphanage.org/donation" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://newhopeorphanage.org/donation" />
   </url>
   <url>
     <loc>https://newhopeorphanage.org/contact</loc>
@@ -47,12 +47,66 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://newhopeorphanage.org/contact" />
   </url>
   <url>
-    <loc>https://newhopeorphanage.org/donation</loc>
+    <loc>https://newhopeorphanage.org/faqs</loc>
     <lastmod>2026-08-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://newhopeorphanage.org/donation" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://newhopeorphanage.org/donation" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://newhopeorphanage.org/donation" />
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://newhopeorphanage.org/faqs" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://newhopeorphanage.org/faqs" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://newhopeorphanage.org/faqs" />
+  </url>
+  <url>
+    <loc>https://newhopeorphanage.org/video-gallery</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://newhopeorphanage.org/video-gallery" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://newhopeorphanage.org/video-gallery" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://newhopeorphanage.org/video-gallery" />
+  </url>
+  <url>
+    <loc>https://newhopeorphanage.org/image-gallery</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://newhopeorphanage.org/image-gallery" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://newhopeorphanage.org/image-gallery" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://newhopeorphanage.org/image-gallery" />
+  </url>
+  <url>
+    <loc>https://newhopeorphanage.org/blog-orientation-professionnelle</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://newhopeorphanage.org/blog-orientation-professionnelle" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://newhopeorphanage.org/blog-orientation-professionnelle" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://newhopeorphanage.org/blog-orientation-professionnelle" />
+  </url>
+  <url>
+    <loc>https://newhopeorphanage.org/blog-developpement-competences</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://newhopeorphanage.org/blog-developpement-competences" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://newhopeorphanage.org/blog-developpement-competences" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://newhopeorphanage.org/blog-developpement-competences" />
+  </url>
+  <url>
+    <loc>https://newhopeorphanage.org/blog-collecte-de-fonds</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://newhopeorphanage.org/blog-collecte-de-fonds" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://newhopeorphanage.org/blog-collecte-de-fonds" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://newhopeorphanage.org/blog-collecte-de-fonds" />
+  </url>
+  <url>
+    <loc>https://newhopeorphanage.org/blog-vie-new-hope</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://newhopeorphanage.org/blog-vie-new-hope" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://newhopeorphanage.org/blog-vie-new-hope" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://newhopeorphanage.org/blog-vie-new-hope" />
   </url>
 </urlset>
