@@ -16,6 +16,7 @@ export const Route = createFileRoute("/dashboard")({
      title: "Mon espace donateur — New Hope Orphanage",
      description:
        "Consultez l'historique de vos dons, le statut de vos paiements et gérez votre profil de donateur New Hope Orphanage.",
+     lang: "fr",
    });
    return {
      ...base,

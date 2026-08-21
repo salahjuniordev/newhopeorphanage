@@ -13,6 +13,7 @@ export const Route = createFileRoute("/login")({
       title: "Connexion — New Hope Orphanage",
       description:
         "Connectez-vous ou créez votre compte New Hope Orphanage pour faire un don, suivre l'historique de vos dons et gérer votre profil de donateur.",
+      lang: "fr",
     });
     return {
       ...base,

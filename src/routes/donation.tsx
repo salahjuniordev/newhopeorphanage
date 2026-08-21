@@ -17,6 +17,7 @@ export const Route = createFileRoute("/donation")({
         "Soutenez les enfants de New Hope Orphanage à Yaoundé et Douala en faisant un don et contribuez à leur offrir de nouvelles opportunités.",
       ogTitle: "Faire un don — New Hope Orphanage",
       ogDescription: "Votre soutien peut changer une vie. Faites un don à New Hope Orphanage et contribuez à offrir aux enfants un avenir plein d'espoir.",
+      lang: "en",
     }),
   component: DonationPage,
 });
@@ -302,7 +303,7 @@ button{padding:10px 24px;background:#FF6D00;color:#fff;border:0;border-radius:8p
       <header className="nho-donate-hero">
         <span className="nho-donate-eyebrow">Make a difference</span>
         <h1>Your gift gives a child a future</h1>
-        <p>Every donation directly feeds, educates and protects children at New Hope Orphanage in Yaoundé, Cameroon.</p>
+        <p>Every donation directly feeds, educates and protects children at New Hope Orphanage in Yaoundé and Douala, Cameroon.</p>
         <div className="nho-donate-trust">
           <span><ShieldCheck size={16}/> Secure Mobile Money via SebPay</span>
           <span><Users size={16}/> 120+ donors</span>

@@ -14,6 +14,10 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteNavbar } from "../components/SiteNavbar";
 import { BottomNav } from "../components/BottomNav";
 import { I18nProvider } from "../lib/i18n";
+import {
+  organizationSchema,
+  websiteSchema,
+} from "../lib/page-head";
 
 const LEGACY_CSS = [
   "/legacy/css/bootstrap.min.css",
@@ -108,7 +112,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:site_name", content: "New Hope Orphanage" },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:type", content: "website" },
-
     ],
     links: [
       { rel: "shortcut icon", type: "image/x-icon", href: "/legacy/images/favicon.png" },
@@ -126,7 +129,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: appCss },
       { rel: "stylesheet", href: navCss },
     ],
-    scripts: LEGACY_JS.map((src) => ({ src, defer: true })),
+    scripts: [
+      ...LEGACY_JS.map((src) => ({ src, defer: true })),
+      // Organization & WebSite structured data
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(organizationSchema()),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(websiteSchema()),
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -136,7 +150,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="fr">
       <head>
         <HeadContent />
       </head>

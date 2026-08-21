@@ -21,13 +21,18 @@ import "@/components/admin.css";
 import { pageHead } from "@/lib/page-head";
 
 export const Route = createFileRoute("/admin")({
- head: () =>
-   pageHead({
+ head: () => {
+   const base = pageHead({
      path: "/admin",
      title: "Administration — New Hope Orphanage",
      description:
        "Tableau de bord d'administration de New Hope Orphanage : suivi des dons, messages de contact, gestion des utilisateurs et invitations d'administrateurs.",
-   }),
+   });
+   return {
+     ...base,
+     meta: [{ name: "robots", content: "noindex, nofollow" }, ...base.meta],
+   };
+ },
  component: AdminApp,
 });
 

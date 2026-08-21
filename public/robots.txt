@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /login
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /api/
+
+Sitemap: https://newhopeorphanage.org/sitemap.xml
